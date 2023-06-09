@@ -1,3 +1,7 @@
+# 广告
+1. 个人博客：https://woodchen.ink
+2. 如果自己部署不方便、麻烦，可以用我的gpt网站，我的博客菜单栏里有，价格便宜。
+
 # openai-billing-query
 批量可视化查询openai(chatgpt)余额，支持显示总量，已使用，剩余量，已用比例，到期时间，GPT-4，是否绑卡
 
