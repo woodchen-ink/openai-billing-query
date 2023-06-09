@@ -1,7 +1,3 @@
-# 广告
-1. 个人博客：https://woodchen.ink
-2. 如果自己部署不方便、麻烦，可以用我的gpt网站，我的博客菜单栏里有，价格便宜。
-
 # openai-billing-query
 批量可视化查询openai(chatgpt)余额，支持显示总量，已使用，剩余量，已用比例，到期时间，GPT-4，是否绑卡
 
@@ -16,4 +12,13 @@
 ```
 ## 反代代码示例
 ![image](https://github.com/woodchen-ink/openai-billing-query/assets/95951386/0bcdb51b-de08-49bc-bd01-5bf731f53d02)
+
+# 怎么部署
+什么？这还用问？下载index.html直接打开就行，除了背景图片，没有任何外部资源。
+
+# 开发过程
+首先感谢Github上开源的几个查询代码，是基于他们的项目使用GPT4进行改的，全程我只手动改了几个css。
+
+# 广告
+个人博客：https://woodchen.ink
 
