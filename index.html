@@ -426,7 +426,7 @@
         const gpt4CheckResponse = await fetch(gpt4Check, { headers });
         const gpt4CheckData = await gpt4CheckResponse.json();
         let GPT4CheckResult = Array.isArray(gpt4CheckData.data) && gpt4CheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
-        let isSubscrible = subscriptionData.plan.id.includes('payg') ? '🟢' : '🔴';
+        let isSubscrible = subscriptionData.plan.id.includes('payg') ? '✅' : '❌';
 
         if (totalAmount > 20) {
           startDate = subDate;
@@ -440,7 +440,7 @@
         const totalUsage = usageData.total_usage / 100;
         let remaining;
         if (currentDate > expiryDate) {
-          remaining = "🔴过期";
+          remaining = "❌过期";
         } else {
           remaining = subscriptionData.system_hard_limit_usd - totalUsage;
         }
