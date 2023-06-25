@@ -1,5 +1,6 @@
 # 广告
-[CZL Chat](https://chat.czl.net)，稳定商业版AI服务。
+- [CZL Chat](https://chat.czl.net)，稳定商业版AI服务。
+- [CZLOapi](https://oapi.czl.net)，OPENAI代理服务，无需翻墙。
 # openai-billing-query
 批量可视化查询openai(chatgpt)余额，支持显示总量，已使用，剩余量，已用比例，到期时间，GPT-4，是否绑卡
 
