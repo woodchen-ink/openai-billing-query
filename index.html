@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CZL-查询OpenAIAPI余额</title>
-  <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否绑卡">
+  <title>OpenAIAPI 信息查询</title>
+  <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否绑卡、组织ID">
   <style>
     :root {
       --color-primary: #1E3B7A;
@@ -340,7 +340,7 @@
 
 <body>
   <header>
-    <h1 class="text-3xl font-semibold text-center mb-8 text-gradient">查询 OpenAI API 余额</h1>
+    <h1 class="text-3xl font-semibold text-center mb-8 text-gradient">OpenAI API 信息查询</h1>
   </header>
 
   <div class="query">
@@ -356,13 +356,13 @@
       <h2 style="display: inline-block;">选择查询线路</h2>
       <p style="display: inline-block; font-size: smaller;">支持自定义线路，官网线路需要魔法</p>
     </div>
-    <select id="api-url-select">
+    <select id="api-url-select" style="width:49%;">
       <option value="https://api.openai.com">【官网线路】api.openai.com</option>
       <option value="custom">【已前置https】自定义 ...</option>
     </select>
 
     <!-- 自定义API链接输入框 -->
-    <input type="text" id="custom-url-input" placeholder="输入自定义API，默认使用 https 协议" />
+    <input type="text" id="custom-url-input" placeholder="输入自定义API，填域名即可，无需https://" style="width:45%;"/>
   </div>
   <button :class="{ loading }" :disabled="loading" onclick="sendRequest()">查询</button> </p>
   </div>

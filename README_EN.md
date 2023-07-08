@@ -2,7 +2,7 @@
 Batch visualization query for openai (chatgpt) balance, supporting display of total amount, used amount, remaining amount, usage ratio, expiration time, GPT-4, and whether it is bound with a card.
 
 # Query example image
-![image](https://github.com/woodchen-ink/openai-billing-query/assets/95951386/3926c794-114b-4666-ad7b-42ad30ec5694)
+![1688789680187.png](https://cdn-img.czl.net/2023/07/08/64a8e2b180068.png)
 
 # Supports custom reverse proxy interfaces
 Add your own interface code in line 361.
