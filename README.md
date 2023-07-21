@@ -3,6 +3,12 @@
 
 ## [English](README_EN.md)
 
+# 7月22日更新后，需登录一次账号，F12查看sess码，使用sess码进行查询
+
+7月22日更新后，已删除key校验规则，需使用sess码进行查询。使用key只能查询总额度、绑卡、GPT4和组织ID。
+
+![1689957580942.png](https://cdn-img.czl.net/2023/07/22/64bab4daba587.png)
+
 # 查询示例图
 ![1688789680187.png](https://cdn-img.czl.net/2023/07/08/64a8e2b180068.png)
 
