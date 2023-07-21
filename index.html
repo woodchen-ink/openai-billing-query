@@ -264,7 +264,7 @@
       border-collapse: collapse;
       width: 100%;
       margin-top: 20px;
-      font-size: 14px;
+      font-size: 10px;
       border-radius: 5px;
       border: none;
       overflow: hidden;
@@ -360,7 +360,7 @@
     </div>
     <select id="api-url-select" style="width:49%;">
       <option value="https://api.openai.com">【官网线路】api.openai.com</option>
-      <option value="custom">【已前置https】自定义</option>
+      <option value="custom">【已前置https】自定义 ...</option>
     </select>
 
     <!-- 自定义API链接输入框 -->
@@ -373,13 +373,14 @@
     <thead>
       <tr>
         <th style="width:35px">序号</th>
-        <th>API KEY</th>
+        <th >API KEY</th>
         <th style="width: 50px">总额度</th>
         <th style="width: 50px">已使用</th>
         <th style="width: 50px">剩余量</th>
         <th style="width: 100px">已用比例</th>
         <th style="width: 90px">到期时间</th>
         <th style="width: 50px">GPT-4</th>
+        <th style="width: 50px">32K</th>
         <th style="width: 50px">绑卡</th>
         <th>组织ID</th>
       </tr>
@@ -432,6 +433,7 @@
         const gpt4CheckResponse = await fetch(gpt4Check, { headers });
         const gpt4CheckData = await gpt4CheckResponse.json();
         let GPT4CheckResult = Array.isArray(gpt4CheckData.data) && gpt4CheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
+        let GPT432kCheckResult = Array.isArray(gpt4CheckData.data) && gpt4CheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
         let isSubscrible = subscriptionData.plan.id.includes('payg') ? '✅' : '❌';
 
         if (totalAmount > 20) {
@@ -461,10 +463,10 @@
           setid = setiddata.data[0].id;
         }
 
-        return [totalAmount, totalUsage, remaining, formattedDate, GPT4CheckResult, isSubscrible, setid];
+        return [totalAmount, totalUsage, remaining, formattedDate, GPT4CheckResult, GPT432kCheckResult,isSubscrible, setid];
       } catch (error) {
         console.error(error);
-        return ["Error", null, null, null, null, null, null];
+        return ["Error", null, null, null, null,null, null, null];
       }
     }
 
@@ -534,7 +536,7 @@
           row.appendChild(serialNumberCell); // 将序列号单元格添加到行中
 
           let apiKeyCell = document.createElement("td");
-          apiKeyCell.textContent = apiKey;
+          apiKeyCell.textContent = apiKey.replace(/^(sk-[a-zA-Z0-9]{4})[a-zA-Z0-9]*(.{6})$/, "$1***$2");
           row.appendChild(apiKeyCell);
 
           console.log(data); // 添加 console.log 以查看 data 的值
@@ -588,12 +590,16 @@
             GPT4CheckResult.textContent = data[4];
             row.appendChild(GPT4CheckResult);
 
+            let GPT432kCheckResult = document.createElement("td");
+            GPT432kCheckResult.textContent = data[5];
+            row.appendChild(GPT432kCheckResult);
+
             let isSubscribe = document.createElement("td");
-            isSubscribe.textContent = data[5];
+            isSubscribe.textContent = data[6];
             row.appendChild(isSubscribe);
 
             let setidCell = document.createElement("td");
-            setidCell.textContent = data[6]; // 使用data[6]来获取组织ID
+            setidCell.textContent = data[7]; 
             row.appendChild(setidCell);
           }
 
