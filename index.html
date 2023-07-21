@@ -536,7 +536,8 @@
           row.appendChild(serialNumberCell); // 将序列号单元格添加到行中
 
           let apiKeyCell = document.createElement("td");
-          apiKeyCell.textContent = apiKey.replace(/^(sk-[a-zA-Z0-9]{4})[a-zA-Z0-9]*(.{6})$/, "$1***$2");
+          // apiKeyCell.textContent = apiKey.replace(/^(sk-[a-zA-Z0-9]{4})[a-zA-Z0-9]*(.{6})$/, "$1***$2");
+          apiKeyCell.textContent = apiKey.replace(/^(.{5}).*(.{4})$/, "$1***$2");
           row.appendChild(apiKeyCell);
 
           console.log(data); // 添加 console.log 以查看 data 的值
