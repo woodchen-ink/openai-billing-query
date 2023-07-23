@@ -9,6 +9,10 @@
 
 ![1689957580942.png](https://cdn-img.czl.net/2023/07/22/64bab4daba587.png)
 
+# SESS ID获取方法
+
+请见我的个人博客，提供视频教程：https://woodchen.ink/1266.html
+
 # 查询示例图
 ![1688789680187.png](https://cdn-img.czl.net/2023/07/08/64a8e2b180068.png)
 
