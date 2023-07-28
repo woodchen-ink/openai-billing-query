@@ -340,19 +340,6 @@
       font-size: 30px;
       /* 调整为适当的大小 */
     }
-
-    button.loading::before {
-      content: "";
-      display: inline-block;
-      margin-right: .5rem;
-      border: 2px solid #fff;
-      border-top-color: transparent;
-      border-bottom-color: transparent;
-      border-radius: 50%;
-      width: .75rem;
-      height: .75rem;
-      animation: rotate .5s linear infinite;
-    }
   </style>
 </head>
 
@@ -371,7 +358,8 @@
       <h2 style="display: inline-block;">输入 API KEY</h2>
       <p style="display: inline-block; font-size: smaller;">本站不保存 KEY 信息，查询后请自行保存</p>
     </div>
-    <textarea id="api-key-input" placeholder="请输入 API-KEY或sessID，多个可直接粘贴"></textarea></p>
+    <textarea id="api-key-input"
+      placeholder="请输入 API-KEY或sessID，多个可直接粘贴"></textarea></p>
     <!-- API链接选择框 -->
     <div class="api-url-container"></div>
     <!-- API链接选择 -->
@@ -436,7 +424,7 @@
         "Authorization": "Bearer " + apiKey,
         "Content-Type": "application/json"
       };
-      const gpt4Check = `${apiUrl}/v1/models`;
+      const modelsCheck = `${apiUrl}/v1/models`;
       const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`;
       let urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
       const urlsetid = apiUrl + '/v1/organizations';
@@ -458,12 +446,8 @@
         const expiryDate = new Date(subscriptionData.access_until * 1000 + 8 * 60 * 60 * 1000);
         const formattedDate = `${expiryDate.getFullYear()}-${(expiryDate.getMonth() + 1).toString().padStart(2, '0')}-${expiryDate.getDate().toString().padStart(2, '0')}`;
 
-        const modelsCheckResponse = await fetch(modelsCheck, { headers });
-        const modelsCheckData = await modelsCheckResponse.json();
-        let GPT35CheckSuccess = GPT35CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-3.5-turbo')) ? '✅' : '❌';
-        let GPT4CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
-        let GPT432kCheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
-        let isSubscrible = subscriptionData.plan.id.includes('payg') ? '✅' : '❌';
+        try {
+          totalAmount = subscriptionData.system_hard_limit_usd;
 
           if (totalAmount > 20) {
             startDate = subDate;
@@ -523,11 +507,37 @@
           errors['setid'] = error.message;
         }
 
-        return [totalAmount, totalUsage, remaining, formattedDate, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult,isSubscrible, setid];
+        // 初始化模型查询结果
+        GPT35CheckResult = '❌';
+        GPT4CheckResult = '❌';
+        GPT432kCheckResult = '❌';
+        //3.5模型查询
+        let GPT35CheckSuccess = false; // 初始化为 false
+        try {
+          const modelsCheckResponse = await fetch(modelsCheck, { headers });
+          const modelsCheckData = await modelsCheckResponse.json();
+          GPT35CheckSuccess = GPT35CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-3.5-turbo')) ? '✅' : '❌';
+        } catch (error) {
+          console.error(error);
+          errors['modelsCheck'] = error.message;
+        }
+        //4模型查询
+        try {
+          const modelsCheckResponse = await fetch(modelsCheck, { headers });
+          const modelsCheckData = await modelsCheckResponse.json();
+          GPT4CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
+          GPT432kCheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
+        } catch (error) {
+          console.error(error);
+          errors['modelsCheck'] = error.message;
+        }
+        //返回值
+        return [totalAmount, totalUsage, remaining, formattedDate, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult, isSubscrible, SubInformation, setid, errors, GPT35CheckSuccess];
       } catch (error) {
         return ["Error", null, null, null, null, null, null, null];
       }
     }
+
 
 
 
@@ -541,12 +551,6 @@
 
     //查询函数
     function sendRequest() {
-
-      let button = document.querySelector("button");
-      button.textContent = "加载中...";
-      button.disabled = true;
-      button.classList.add("loading")
-
       let apiKeyInput = document.getElementById("api-key-input");
       let apiUrlSelect = document.getElementById("api-url-select");
       let customUrlInput = document.getElementById("custom-url-input");
@@ -606,8 +610,6 @@
           }
           )
 
-
-
           let row = document.createElement("tr");
 
           let serialNumberCell = document.createElement("td"); // 创建序列号单元格
@@ -665,16 +667,20 @@
             expireTime.textContent = data[3];
             row.appendChild(expireTime);
 
+            let GPT35CheckResult = document.createElement("td");
+            GPT35CheckResult.textContent = data[4];
+            row.appendChild(GPT35CheckResult);
+
             let GPT4CheckResult = document.createElement("td");
-            GPT4CheckResult.textContent = data[4];
+            GPT4CheckResult.textContent = data[5];
             row.appendChild(GPT4CheckResult);
 
             let GPT432kCheckResult = document.createElement("td");
-            GPT432kCheckResult.textContent = data[5];
+            GPT432kCheckResult.textContent = data[6];
             row.appendChild(GPT432kCheckResult);
 
             let isSubscribe = document.createElement("td");
-            isSubscribe.textContent = data[6];
+            isSubscribe.textContent = data[7];
             row.appendChild(isSubscribe);
 
             let SubInformation = document.createElement("td");
@@ -682,13 +688,17 @@
             row.appendChild(SubInformation);
 
             let setidCell = document.createElement("td");
-            setidCell.textContent = data[8];
+            setidCell.textContent = data[9];
             row.appendChild(setidCell);
+
 
             // 是否有效列
             let isSubscriptionValid = document.createElement("td");
-            isSubscriptionValid.textContent = data[4] === '✅' ? '有效' : '无效'; // 使用 GPT35CheckResult 的值进行判断
+            isSubscriptionValid.textContent = data[4] === '✅' ? '🥰' : '🥶'; // 使用 GPT35CheckResult 的值进行判断
+            // 添加自定义类名
+            isSubscriptionValid.classList.add('emoji');
             row.appendChild(isSubscriptionValid);
+
 
           }
           console.log('查看行信息', row)
@@ -700,10 +710,6 @@
           serialNumber++; // 增加序列号
           h2.style.display = 'block';
           table.style.display = 'table';
-
-          button.textContent = "查询";
-          button.disabled = false;
-          button.classList.remove("loading")
         })
 
       }
