@@ -340,6 +340,19 @@
       font-size: 30px;
       /* 调整为适当的大小 */
     }
+
+    button.loading::before {
+      content: "";
+      display: inline-block;
+      margin-right: .5rem;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      width: .75rem;
+      height: .75rem;
+      animation: rotate .5s linear infinite;
+    }
   </style>
 </head>
 
@@ -358,8 +371,7 @@
       <h2 style="display: inline-block;">输入 API KEY</h2>
       <p style="display: inline-block; font-size: smaller;">本站不保存 KEY 信息，查询后请自行保存</p>
     </div>
-    <textarea id="api-key-input"
-      placeholder="请输入 API-KEY或sessID，多个可直接粘贴"></textarea></p>
+    <textarea id="api-key-input" placeholder="请输入 API-KEY或sessID，多个可直接粘贴"></textarea></p>
     <!-- API链接选择框 -->
     <div class="api-url-container"></div>
     <!-- API链接选择 -->
@@ -551,6 +563,11 @@
 
     //查询函数
     function sendRequest() {
+      let button = document.querySelector("button");
+      button.textContent = "加载中...";
+      button.disabled = true;
+      button.classList.add("loading")
+
       let apiKeyInput = document.getElementById("api-key-input");
       let apiUrlSelect = document.getElementById("api-url-select");
       let customUrlInput = document.getElementById("custom-url-input");
@@ -710,6 +727,10 @@
           serialNumber++; // 增加序列号
           h2.style.display = 'block';
           table.style.display = 'table';
+
+          button.textContent = "查询";
+          button.disabled = false;
+          button.classList.remove("loading")
         })
 
       }
