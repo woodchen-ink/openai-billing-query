@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenAIAPI 信息查询</title>
-  <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否绑卡、组织ID">
+  <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否GPT4-32K、是否绑卡、绑卡信息、组织信息、是否有效">
   <style>
     :root {
       --color-primary: #1E3B7A;
@@ -21,7 +21,7 @@
       /* 自定义背景图 */
       background-size: cover;
       width: 90%;
-      max-width: 1280px;
+      max-width: 1400px;
       margin-left: auto;
       margin-right: auto;
       padding-left: 2rem;
@@ -276,7 +276,7 @@
       color: #ffffff;
       font-weight: 400;
       height: 20px;
-      padding: 10px 25px;
+      padding: 10px 5px;
       text-align: left;
       /* border: 1px solid #dcdcdc; */
     }
@@ -285,7 +285,7 @@
     #result-table td {
       height: 20px;
       text-align: left;
-      padding: 10px 25px;
+      padding: 10px 5px;
       /* border: 1px solid #d3d3d3; */
     }
 
@@ -314,8 +314,8 @@
     /* 下面的代码定义了结果表格数据单元格的样式 */
     #result-table .status-error {
       height: 20px;
-      text-align: center;
-      padding: 10px 25px;
+      text-align: left;
+      padding: 10px 5px;
       /* border: 1px solid #dcdcdc; */
     }
 
@@ -335,14 +335,22 @@
       /* border: 1px solid #999; */
       background-color: #fff;
     }
+
+    .emoji {
+      font-size: 30px;
+      /* 调整为适当的大小 */
+    }
   </style>
 </head>
 
 <body>
   <header>
     <h1 class="text-3xl font-semibold text-center mb-8 text-gradient">OpenAI API 信息查询</h1>
-    <p class=" text-center  text-gradient" style="text-align: center;">7月22日更新后，需使用sess码进行查询。使用key只能查询总额度、绑卡、GPT4和组织ID。</p>
-    <a href="oapi.html" style="text-align: center;color:antiquewhite;text-decoration: none;font-weight: 700;"><p>Oapi的余额查询</p></a>
+    <p class=" text-center  text-gradient" style="text-align: center;">7月22日更新后，需使用sess码进行查询。使用key只能查询总额度、绑卡、GPT4和组织ID。
+    </p>
+    <a href="oapi.html" style="text-align: center;color:antiquewhite;text-decoration: none;font-weight: 700;">
+      <p>Oapi的余额查询</p>
+    </a>
   </header>
 
   <div class="query">
@@ -350,7 +358,8 @@
       <h2 style="display: inline-block;">输入 API KEY</h2>
       <p style="display: inline-block; font-size: smaller;">本站不保存 KEY 信息，查询后请自行保存</p>
     </div>
-    <textarea id="api-key-input" placeholder="请输入 API-KEY或sessID，多个可直接粘贴"></textarea></p>
+    <textarea id="api-key-input"
+      placeholder="请输入 API-KEY或sessID，多个可直接粘贴"></textarea></p>
     <!-- API链接选择框 -->
     <div class="api-url-container"></div>
     <!-- API链接选择 -->
@@ -364,7 +373,7 @@
     </select>
 
     <!-- 自定义API链接输入框 -->
-    <input type="text" id="custom-url-input" placeholder="输入自定义API，填域名即可，无需https://" style="width:45%;"/>
+    <input type="text" id="custom-url-input" placeholder="输入自定义API，填域名即可，无需https://" style="width:45%;" />
   </div>
   <button :class="{ loading }" :disabled="loading" onclick="sendRequest()">查询</button> </p>
   </div>
@@ -373,16 +382,19 @@
     <thead>
       <tr>
         <th style="width:35px">序号</th>
-        <th >API KEY</th>
-        <th style="width: 50px">总额度</th>
+        <th>API KEY</th>
+        <th style="width: 50px;">总额度</th>
         <th style="width: 50px">已使用</th>
         <th style="width: 50px">剩余量</th>
         <th style="width: 100px">已用比例</th>
         <th style="width: 90px">到期时间</th>
+        <th style="width: 50px">GPT-3.5</th>
         <th style="width: 50px">GPT-4</th>
         <th style="width: 50px">32K</th>
         <th style="width: 50px">绑卡</th>
-        <th>组织ID</th>
+        <th style="width: 220px">绑卡信息</th>
+        <th style="width: 100px">组织名称+邮箱+ID</th>
+        <th style="width: 50px;">是否有效</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -398,15 +410,16 @@
     let queriedApiKeys = [];
     let serialNumber = 1;
 
+
     async function checkBilling(apiKey, apiUrl) {
-      // 计算起始日期和结束日期,当前为 90 天，最大不超过100天
       const now = new Date();
       let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
       const endDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
       const subDate = new Date(now);
       subDate.setDate(1);
 
-      // 设置API请求URL和请求头
+
+
       const headers = {
         "Authorization": "Bearer " + apiKey,
         "Content-Type": "application/json"
@@ -414,61 +427,97 @@
       const gpt4Check = `${apiUrl}/v1/models`;
       const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`;
       let urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
-      const urlsetid = apiUrl + '/v1/organizations'; //查组织id
+      const urlsetid = apiUrl + '/v1/organizations';
+
+
+
 
       try {
-        // 获取API限额
+        let totalAmount, totalUsage, remaining, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult, setid, isSubscrible;
+        let SubscribleInformation = {};
+        let SubInformation;
+        let errors = {};
+
         let response = await fetch(urlSubscription, { headers });
-        if (!response.ok) {
-          console.log("APIKEY 错误或账号被封，请登录 OpenAI 查看。");
-          return;
-        }
 
         let currentDate = new Date();
         const subscriptionData = await response.json();
-        const totalAmount = subscriptionData.system_hard_limit_usd;
+        console.log("1:" + subscriptionData);
         const expiryDate = new Date(subscriptionData.access_until * 1000 + 8 * 60 * 60 * 1000);
         const formattedDate = `${expiryDate.getFullYear()}-${(expiryDate.getMonth() + 1).toString().padStart(2, '0')}-${expiryDate.getDate().toString().padStart(2, '0')}`;
 
-        const gpt4CheckResponse = await fetch(gpt4Check, { headers });
-        const gpt4CheckData = await gpt4CheckResponse.json();
-        let GPT4CheckResult = Array.isArray(gpt4CheckData.data) && gpt4CheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
-        let GPT432kCheckResult = Array.isArray(gpt4CheckData.data) && gpt4CheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
+        const modelsCheckResponse = await fetch(modelsCheck, { headers });
+        const modelsCheckData = await modelsCheckResponse.json();
+        let GPT35CheckSuccess = GPT35CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-3.5-turbo')) ? '✅' : '❌';
+        let GPT4CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
+        let GPT432kCheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
         let isSubscrible = subscriptionData.plan.id.includes('payg') ? '✅' : '❌';
 
-        if (totalAmount > 20) {
-          startDate = subDate;
-          urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
+          if (totalAmount > 20) {
+            startDate = subDate;
+            urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
+            response = await fetch(urlUsage, { headers });
+            const usageData = await response.json();
+          }
           response = await fetch(urlUsage, { headers });
           const usageData = await response.json();
+          totalUsage = usageData.total_usage / 100;
+          remaining = currentDate > expiryDate ? "❌过期" : (totalAmount - totalUsage).toFixed(3);
+        } catch (error) {
+          console.error(error);
+          errors['subscription'] = error.message;
+        }
+        //获取是否绑卡
+        try {
+          isSubscrible = subscriptionData.plan.id.includes('payg') ? '✅' : '❌';
+        } catch (error) {
+          console.error(error);
+        }
+        //获取绑卡信息
+        try {
+          // 从 subscriptionData 中获取 SubscribleInformation 的值...
+          SubscribleInformation.account_name = subscriptionData.account_name;
+          SubscribleInformation.po_number = subscriptionData.po_number;
+          SubscribleInformation.billing_email = subscriptionData.billing_email;
+          SubscribleInformation.tax_ids = subscriptionData.tax_ids;
+
+          let billingAddress = subscriptionData.billing_address; // 定义并赋值 billingAddress
+          let businessAddress = subscriptionData.business_address; // 定义并赋值 businessAddress
+
+          SubInformation = "Account Name: " + SubscribleInformation.account_name + "---";
+          SubInformation += "PO Number: " + SubscribleInformation.po_number + "---";
+          SubInformation += "Billing Email: " + SubscribleInformation.billing_email + "---";
+          SubInformation += "Tax IDs: " + SubscribleInformation.tax_ids + "---";
+          SubInformation += "Billing Address: " + billingAddress.line1 + ", " + billingAddress.city + ", " + billingAddress.state + ", " + billingAddress.country + ", " + billingAddress.postal_code + "---";
+          SubInformation += "Business Address: " + businessAddress.line1 + ", " + businessAddress.city + ", " + businessAddress.state + ", " + businessAddress.country + ", " + businessAddress.postal_code;
+        }
+        catch (error) {
+          console.error(error);
+        }
+        //组织信息
+        try {
+          response = await fetch(urlsetid, { headers });
+          const setiddata = await response.json();
+          setid = '';
+          const emailStartIndex = setiddata.data[0].description.lastIndexOf(' ') + 1;
+          const email = setiddata.data[0].description.substring(emailStartIndex);
+          if (typeof setiddata.data[1] !== 'undefined') {
+            setid = setiddata.data[0].title + '----' + email + '----' + setiddata.data[0].id + '----' + setiddata.data[1].id;
+          } else {
+            setid = setiddata.data[0].title + '----' + email + '----' + setiddata.data[0].id;
+          }
+        } catch (error) {
+          console.error(error);
+          errors['setid'] = error.message;
         }
 
-        response = await fetch(urlUsage, { headers });
-        const usageData = await response.json();
-        const totalUsage = usageData.total_usage / 100;
-        let remaining;
-        if (currentDate > expiryDate) {
-          remaining = "❌过期";
-        } else {
-          remaining = subscriptionData.system_hard_limit_usd - totalUsage;
-        }
-
-        //查询组织id
-        response = await fetch(urlsetid, { headers });
-        const setiddata = await response.json();
-        let setid = '';
-        if (typeof setiddata.data[1] !== 'undefined') {
-          setid = setiddata.data[0].id + '----' + setiddata.data[1].id;
-        } else {
-          setid = setiddata.data[0].id;
-        }
-
-        return [totalAmount, totalUsage, remaining, formattedDate, GPT4CheckResult, GPT432kCheckResult,isSubscrible, setid];
+        return [totalAmount, totalUsage, remaining, formattedDate, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult,isSubscrible, setid];
       } catch (error) {
-        console.error(error);
-        return ["Error", null, null, null, null,null, null, null];
+        return ["Error", null, null, null, null, null, null, null];
       }
     }
+
+
 
     function formatDate(date) {
       const year = date.getFullYear();
@@ -478,6 +527,7 @@
       return `${year}-${month}-${day}`;
     }
 
+    //查询函数
     function sendRequest() {
       let apiKeyInput = document.getElementById("api-key-input");
       let apiUrlSelect = document.getElementById("api-url-select");
@@ -529,6 +579,15 @@
         queriedApiKeys.push(apiKey);
 
         checkBilling(apiKey, apiUrl).then((data) => {
+          data = data.map(item => {
+            if (item === undefined) {
+              return 'Not Found.'
+            } else {
+              return item
+            }
+          }
+          )
+
           let row = document.createElement("tr");
 
           let serialNumberCell = document.createElement("td"); // 创建序列号单元格
@@ -536,38 +595,38 @@
           row.appendChild(serialNumberCell); // 将序列号单元格添加到行中
 
           let apiKeyCell = document.createElement("td");
-          // apiKeyCell.textContent = apiKey.replace(/^(sk-[a-zA-Z0-9]{4})[a-zA-Z0-9]*(.{6})$/, "$1***$2");
           apiKeyCell.textContent = apiKey.replace(/^(.{5}).*(.{4})$/, "$1***$2");
           row.appendChild(apiKeyCell);
 
-          console.log(data); // 添加 console.log 以查看 data 的值
+          console.log('查看查询结果', data); // 添加 console.log 以查看 data 的值
 
-          if (data?.[0] === "Error" || data === undefined) {
+          if (data[0] === undefined) {
             let errorMessageCell = document.createElement("td");
             errorMessageCell.colSpan = "8";
             errorMessageCell.classList.add("status-error");
             errorMessageCell.textContent = "不正确或已失效的API-KEY";
             row.appendChild(errorMessageCell);
           } else {
-            let totalGrantedCell = document.createElement("td");
-            totalGrantedCell.textContent = data[0].toFixed(2);
-            row.appendChild(totalGrantedCell);
+            let totalAmount = document.createElement("td");
+            totalAmount.textContent = data[0];
+            row.appendChild(totalAmount);
 
             let totalUsedCell = document.createElement("td");
-            totalUsedCell.textContent = data[1].toFixed(2);
+            if (!isNaN(data[1])) {
+              totalUsedCell.textContent = data[1].toFixed(3);
+            } else {
+              totalUsedCell.textContent = '❌'
+            }
             row.appendChild(totalUsedCell);
 
             let totalAvailableCell = document.createElement("td");
-            totalAvailableCell.textContent = typeof data[2] === 'number' ? data[2].toFixed(2) : data[2];
+            totalAvailableCell.textContent = typeof data[2] === 'number' ? data[2] : data[2];
             row.appendChild(totalAvailableCell);
-
-            // 修改后的进度条单元格
             let progressCell = document.createElement("td");
             let progressContainer = document.createElement("div"); // 添加一个新的容器元素
             progressContainer.style.width = "100%";
             progressContainer.style.height = "20px";
             progressContainer.style.backgroundColor = "#f3f3f3"; // 设置容器的背景色为灰白色
-
             let progressBar = document.createElement("div");
             progressBar.style.width = (data[1] / data[0] * 100).toFixed(2) + "%";
             progressBar.style.height = "20px";
@@ -577,7 +636,6 @@
             progressBar.style.textAlign = "right"; // 设置文本对齐方式为右对齐
             progressBar.style.paddingRight = "5px"; // 设置右边距以确保文本不超出边界
             progressBar.style.color = "black"; // 设置文本颜色为白色
-
             progressContainer.appendChild(progressBar); // 将进度条添加到容器中
             progressCell.appendChild(progressContainer); // 将容器添加到单元格中
             row.appendChild(progressCell);
@@ -599,11 +657,21 @@
             isSubscribe.textContent = data[6];
             row.appendChild(isSubscribe);
 
-            let setidCell = document.createElement("td");
-            setidCell.textContent = data[7]; 
-            row.appendChild(setidCell);
-          }
+            let SubInformation = document.createElement("td");
+            SubInformation.textContent = data[8];
+            row.appendChild(SubInformation);
 
+            let setidCell = document.createElement("td");
+            setidCell.textContent = data[8];
+            row.appendChild(setidCell);
+
+            // 是否有效列
+            let isSubscriptionValid = document.createElement("td");
+            isSubscriptionValid.textContent = data[4] === '✅' ? '有效' : '无效'; // 使用 GPT35CheckResult 的值进行判断
+            row.appendChild(isSubscriptionValid);
+
+          }
+          console.log('查看行信息', row)
           tableBody.appendChild(row);
 
           if (i === apiKeys.length - 1) {
@@ -612,32 +680,8 @@
           serialNumber++; // 增加序列号
           h2.style.display = 'block';
           table.style.display = 'table';
+        })
 
-        }).catch((error) => {
-          console.error(error);
-          let row = document.createElement("tr");
-
-          let serialNumberCell = document.createElement("td"); // 创建序列号单元格
-          serialNumberCell.textContent = serialNumber; // 设置序列号文本
-          row.appendChild(serialNumberCell); // 将序列号单元格添加到行中
-          let apiKeyCell = document.createElement("td");
-          apiKeyCell.textContent = apiKey;
-          row.appendChild(apiKeyCell);
-
-          let errorMessageCell = document.createElement("td");
-          errorMessageCell.colSpan = "8";
-          errorMessageCell.style.width = "90px";
-          errorMessageCell.classList.add("status-error");
-          errorMessageCell.textContent = "账户疑似被封禁，请登录 OpenAI 官网确认";
-          row.appendChild(errorMessageCell);
-
-          tableBody.appendChild(row);
-
-          if (i === apiKeys.length - 1) {
-            queriedApiKeys = [];
-          }
-          serialNumber++; // 增加序列号
-        });
       }
     }
 
