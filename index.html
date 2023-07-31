@@ -8,12 +8,12 @@
   <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否GPT4-32K、是否绑卡、绑卡信息、组织信息、是否有效">
   <style>
     :root {
-      --color-primary: #2EA7E0;
-      --color-primary-dark: #2482AD;
-      --color-primary-alpha: #75C2E6;
-      --body-color: #ffffff;
+      --color-primary: #1E3B7A;
+      --color-primary-dark: #1E3B7A;
+      --color-primary-alpha: #01847f;
+      --body-color: #dadada;
       --body-bg: #000000;
-      --border-color: #f1ebeb00;
+      --border-color: #f8f8f800;
     }
 
     body {
@@ -41,13 +41,13 @@
     }
 
     a {
-      color: var(--color-primary-alpha);
+      color: var(--color-primary);
       text-decoration: none;
       transition: color .3s;
     }
 
     a:hover {
-      color: var(--color-primary-alpha);
+      color: var(--color-primary);
       text-decoration: underline;
     }
 
@@ -111,7 +111,7 @@
       margin: 1rem 0 2rem;
       border: 1px solid var(--border-color);
       border-radius: .25rem;
-      /* transition: background .3s; */
+      transition: background .3s;
     }
 
     details[open] {
@@ -192,19 +192,15 @@
     }
 
     footer {
+      padding: 1rem;
       border-top: 1px solid var(--border-color);
       text-align: center;
-      /* opacity: .5; */
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color:#212121;
-      line-height:unset !important;
+      opacity: .5;
     }
-    footer .p{
-      padding: 0;
-      color: rgb(255, 255, 255);
+
+    footer i {
+      font-style: normal;
+      color: #b32142;
     }
 
     .success,
@@ -413,15 +409,12 @@
         <th style="width: 50px;">是否有效</th>
       </tr>
     </thead>
+    <tbody></tbody>
   </table>
   <footer>
-    <p>广告链接：
-      <a href="https://chat.czl.net"  target="_blank">CZLChat</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="https://oapi.czl.net"  target="_blank">CZLOapi</a>
-    </p>
-    <p>本网页由<a href="https://woodchen.ink"
-        target="_blank">woodchen</a>开源于<a href="https://github.com/woodchen-ink/openai-billing-query"
-        target="_blank">Github</a>,欢迎给个star</p>
+    <a href="https://chat.czl.net" style="color: white;" target="_blank">CZLChat</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="https://oapi.czl.net" style="color: white;" target="_blank">CZLOapi</a>
+
   </footer>
 
 
@@ -571,7 +564,9 @@
     //查询函数
     function sendRequest() {
       let button = document.querySelector("button");
-
+      button.textContent = "加载中...";
+      button.disabled = true;
+      button.classList.add("loading")
 
       let apiKeyInput = document.getElementById("api-key-input");
       let apiUrlSelect = document.getElementById("api-url-select");
@@ -585,7 +580,6 @@
         alert("请填写API KEY");
         return;
       }
-
 
       document.getElementById("result-table").getElementsByTagName('tbody')[0].innerHTML = "";
 
@@ -609,14 +603,9 @@
       if (apiKeys.length === 0) {
         alert("未匹配到 API-KEY，请检查输入内容");
         return;
-
       }
 
       alert("成功匹配到 API Key，确认后开始查询：" + apiKeys);
-
-      button.textContent = "加载中...";
-      button.disabled = true;
-      button.classList.add("loading")
 
       let tableBody = document.querySelector("#result-table tbody");
       for (let i = 0; i < apiKeys.length; i++) {
