@@ -8,12 +8,12 @@
   <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否GPT4-32K、是否绑卡、绑卡信息、组织信息、是否有效">
   <style>
     :root {
-      --color-primary: #1E3B7A;
-      --color-primary-dark: #1E3B7A;
-      --color-primary-alpha: #01847f;
-      --body-color: #dadada;
+      --color-primary: #2EA7E0;
+      --color-primary-dark: #2482AD;
+      --color-primary-alpha: #75C2E6;
+      --body-color: #ffffff;
       --body-bg: #000000;
-      --border-color: #f8f8f800;
+      --border-color: #f1ebeb00;
     }
 
     body {
@@ -47,7 +47,7 @@
     }
 
     a:hover {
-      color: var(--color-primary);
+      color: var(--color-primary-alpha);
       text-decoration: underline;
     }
 
@@ -111,7 +111,7 @@
       margin: 1rem 0 2rem;
       border: 1px solid var(--border-color);
       border-radius: .25rem;
-      transition: background .3s;
+      /* transition: background .3s; */
     }
 
     details[open] {
@@ -192,15 +192,26 @@
     }
 
     footer {
-      padding: 1rem;
-      border-top: 1px solid var(--border-color);
+      /* padding: 2px; */
+      /* border-top: 1px solid var(--border-color); */
       text-align: center;
-      opacity: .5;
+      /* opacity: .5; */
+      /* position: fixed; */
+      /* bottom: 0; */
+      /* left: 0; */
+      margin-top: 20px;
+      /* width: 100%; */
+      /* background-color:#212121; */
+      line-height: unset !important;
+      line-height: normal;
     }
 
-    footer i {
-      font-style: normal;
-      color: #b32142;
+    footer .p {
+      display: flex;
+      margin-block-start: 0 !important;
+      margin-block-end: 0 !important;
+      padding: 0;
+      color: rgb(255, 255, 255);
     }
 
     .success,
@@ -412,8 +423,13 @@
     <tbody></tbody>
   </table>
   <footer>
-    <a href="https://chat.czl.net" style="color: white;" target="_blank">CZLChat</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://oapi.czl.net" style="color: white;" target="_blank">CZLOapi</a>
+    <p>广告链接：
+      <a href="https://chat.czl.net" target="_blank">CZLChat</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://oapi.czl.net" target="_blank">CZLOapi</a>
+      <br>
+      本网页由<a href="https://woodchen.ink" target="_blank">woodchen</a>开源于<a
+        href="https://github.com/woodchen-ink/openai-billing-query" target="_blank">Github</a>,欢迎给个star
+    </p>
 
   </footer>
 
@@ -496,8 +512,11 @@
           SubInformation += "PO Number: " + SubscribleInformation.po_number + "---";
           SubInformation += "Billing Email: " + SubscribleInformation.billing_email + "---";
           SubInformation += "Tax IDs: " + SubscribleInformation.tax_ids + "---";
-          SubInformation += "Billing Address: " + billingAddress.line1 + ", " + billingAddress.city + ", " + billingAddress.state + ", " + billingAddress.country + ", " + billingAddress.postal_code + "---";
-          SubInformation += "Business Address: " + businessAddress.line1 + ", " + businessAddress.city + ", " + businessAddress.state + ", " + businessAddress.country + ", " + businessAddress.postal_code;
+          //使用 JavaScript 的可选链式调用来确定是否为null，避免异常控制台报错
+          SubInformation += "Billing Address: " + (billingAddress?.line1 ? billingAddress.line1 : '') + ", " + (billingAddress?.city ? billingAddress.city : '') + ", " + (billingAddress?.state ? billingAddress.state : '') + ", " + (billingAddress?.country ? billingAddress.country : '') + ", " + (billingAddress?.postal_code ? billingAddress.postal_code : '') + "---";
+          SubInformation += "Business Address: " + (businessAddress?.line1 ? businessAddress.line1 : '') + ", " + (businessAddress?.city ? businessAddress.city : '') + ", " + (businessAddress?.state ? businessAddress.state : '') + ", " + (businessAddress?.country ? businessAddress.country : '') + ", " + (businessAddress?.postal_code ? businessAddress.postal_code : '');
+
+
         }
         catch (error) {
           console.error(error);

@@ -3,6 +3,8 @@
 
 ## [English](README_EN.md)
 
+Telegram交流群：https://t.me/ai_cn2023  
+
 ## 7月29日更新（点个star吧）
 
 1. 新增GPT-3.5查询、绑卡信息（人名和地址）、组织名称、邮箱、组织ID、是否有效；
