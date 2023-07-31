@@ -470,7 +470,6 @@
 
         let currentDate = new Date();
         const subscriptionData = await response.json();
-        console.log("1:" + subscriptionData);
         const expiryDate = new Date(subscriptionData.access_until * 1000 + 8 * 60 * 60 * 1000);
         const formattedDate = `${expiryDate.getFullYear()}-${(expiryDate.getMonth() + 1).toString().padStart(2, '0')}-${expiryDate.getDate().toString().padStart(2, '0')}`;
 
@@ -737,7 +736,6 @@
 
 
           }
-          console.log('查看行信息', row)
           tableBody.appendChild(row);
 
           if (i === apiKeys.length - 1) {
