@@ -46,6 +46,13 @@ Telegram交流群：https://t.me/ai_cn2023
 ## 怎么部署
 下载index.html直接打开就行，除了背景图片，没有任何外部资源。
 
+## 贡献列表
+
+| 人员 | 贡献内容 |
+| ---- | ---- |
+| [qiyue](https://github.com/qiyue-rgb) | 技术协助 |
+| 🙊 | cloudflare反代地址 |
+
 
 ## 广告
 - [CZL Chat](https://chat.czl.net)，稳定商业版AI服务。
