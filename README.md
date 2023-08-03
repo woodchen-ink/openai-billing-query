@@ -10,8 +10,6 @@ Telegram交流群：https://t.me/ai_cn2023
 1. 新增GPT-3.5查询、绑卡信息（人名和地址）、组织名称、邮箱、组织ID、是否有效；
 2. 使用sk查询不再整体报错，而是展示可以查询到的内容；
 
-[qiyue](https://github.com/qiyue-rgb)提供了协助。
-
 ### sess查询示例（120刀4.0key）
 
 ![1690562370550.png](https://cdn-img.czl.net/2023/07/29/64c3ef5003257.png)
