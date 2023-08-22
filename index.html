@@ -416,7 +416,7 @@
         <th style="width: 50px">32K</th>
         <th style="width: 50px">绑卡</th>
         <th style="width: 220px">绑卡信息</th>
-        <th style="width: 100px">组织名称+邮箱+ID</th>
+        <th style="width: 100px">组织信息</th>
         <th style="width: 50px;">是否有效</th>
       </tr>
     </thead>
@@ -527,15 +527,32 @@
           setid = '';
           const emailStartIndex = setiddata.data[0].description.lastIndexOf(' ') + 1;
           const email = setiddata.data[0].description.substring(emailStartIndex);
+          const title = setiddata.data[0].title;
+          const id1 = setiddata.data[0].id;
+          const name = setiddata.data[0].name;
+          const description = setiddata.data[0].description;
+          const createdTimestamp = setiddata.data[0].created;
+          const createdDate = new Date(createdTimestamp * 1000);
+
+          // 格式化日期
+          const formattedDate = `${createdDate.getFullYear()}.${(createdDate.getMonth() + 1).toString().padStart(2, '0')}.${createdDate.getDate().toString().padStart(2, '0')}`;
+
+          const timeAndZone = createdDate.toString().match(/\d{2}:\d{2}:\d{2} \w+/)[0];
+
           if (typeof setiddata.data[1] !== 'undefined') {
-            setid = setiddata.data[0].title + '----' + email + '----' + setiddata.data[0].id + '----' + setiddata.data[1].id;
+            const id2 = setiddata.data[1].id;
+            setid = `${title}----${email}----${id1}----${id2}----${name}----${description}----${formattedDate} ${timeAndZone}`;
           } else {
-            setid = setiddata.data[0].title + '----' + email + '----' + setiddata.data[0].id;
+            setid = `${title}----${email}----${id1}----${name}----${description}----${formattedDate} ${timeAndZone}`;
           }
         } catch (error) {
           console.error(error);
           errors['setid'] = error.message;
         }
+
+
+
+
 
         // 初始化模型查询结果
         GPT35CheckResult = '❌';
