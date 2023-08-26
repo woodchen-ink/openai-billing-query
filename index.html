@@ -578,10 +578,42 @@
           console.error(error);
           errors['modelsCheck'] = error.message;
         }
+        // 是否有效查询
+        async function checkCompletion(apiKey, apiUrl) {
+          const urlCompletion = `${apiUrl}/v1/chat/completions`;
+          const headers = {
+            "Authorization": "Bearer " + apiKey,
+            "Content-Type": "application/json"
+          };
+          const postBody = JSON.stringify({
+            "model": "gpt-3.5-turbo",
+            "messages": [{
+              "role": "user",
+              "content": "Hello"
+            }],
+            "max_tokens": 5
+          });
+
+          let response = await fetch(urlCompletion, {
+            method: 'POST',
+            headers: headers,
+            body: postBody
+          });
+
+          let data = await response.json();
+          // 判断请求是否成功
+          if (response.status === 200) {
+            return ['✅', data.usage.total_tokens]; // 返回状态和 total_tokens
+          } else {
+            return ['❌', null];
+          }
+        }
+        // 调用 checkCompletion 函数并获取结果
+        let completionCheckResult = await checkCompletion(apiKey, apiUrl);
         //返回值
-        return [totalAmount, totalUsage, remaining, formattedDate, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult, isSubscrible, SubInformation, setid, errors, GPT35CheckSuccess];
+        return [totalAmount, totalUsage, remaining, formattedDate, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult, isSubscrible, SubInformation, setid, errors, GPT35CheckSuccess, completionCheckResult];
       } catch (error) {
-        return ["Error", null, null, null, null, null, null, null];
+        return ["Error", null, null, null, null, null, null, null, null];
       }
     }
 
@@ -745,11 +777,13 @@
 
 
             // 是否有效列
-            let isSubscriptionValid = document.createElement("td");
-            isSubscriptionValid.textContent = data[4] === '✅' ? '🥰' : '🥶'; // 使用 GPT35CheckResult 的值进行判断
-            // 添加自定义类名
-            isSubscriptionValid.classList.add('emoji');
-            row.appendChild(isSubscriptionValid);
+            let completionCheckResultCell = document.createElement("td");
+            completionCheckResultCell.innerHTML = `<span style="font-size:24px">${data[12][0]}</span><br>消耗${data[12][1]} tokens`; // 使用 innerHTML 添加两行内容
+            row.appendChild(completionCheckResultCell);
+            // let isSubscriptionValid = document.createElement("td");
+            // isSubscriptionValid.textContent = data[4] === '✅' ? '✅' : '❌'; // 使用 GPT35CheckResult 的值进行判断
+
+            // row.appendChild(completionCheckResultCell);
 
 
           }
