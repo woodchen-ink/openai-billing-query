@@ -3,34 +3,39 @@
 
 ## [English](README_EN.md)
 
-Telegram交流群：https://t.me/ai_cn2023  
+Telegram交流群：https://t.me/ai_cn2023 
 
-## 8月22日更新
+## 更新日志
+### 8月26日更新
+1. 有效检查改为发送请求，不再使用正则；
+
+### 8月22日更新
 
 1. 组织信息增加`userid`和`创建时间`；
 
-## 7月29日更新（点个star吧）
+### 7月29日更新（点个star吧）
 
 1. 新增GPT-3.5查询、绑卡信息（人名和地址）、组织名称、邮箱、组织ID、是否有效；
 2. 使用sk查询不再整体报错，而是展示可以查询到的内容；
 
-### sess查询示例（120刀4.0key）
-
-![1690562370550.png](https://cdn-img.czl.net/2023/07/29/64c3ef5003257.png)
-
-### sk查询示例(120刀4.0key)
-
-![1690562289330.png](https://cdn-img.czl.net/2023/07/29/64c3eefec26cd.png)
-
-### sk查询示例（5刀未绑卡key）
-
-![1690562178945.png](https://cdn-img.czl.net/2023/07/29/64c3ee9070310.png)
-
-## 7月22日更新后，如要查看完整信息，需登录一次账号，F12查看sess码，使用sess码进行查询
+### 7月22日更新后，如要查看完整信息，需登录一次账号，F12查看sess码，使用sess码进行查询
 
 7月22日更新后，已删除key校验规则，需使用sess码进行查询。使用key只能查询部分信息。
 
 ![1689957580942.png](https://cdn-img.czl.net/2023/07/22/64bab4daba587.png)
+
+## sess查询示例（120刀4.0key）
+
+![1690562370550.png](https://cdn-img.czl.net/2023/07/29/64c3ef5003257.png)
+
+## sk查询示例(120刀4.0key)
+
+![1690562289330.png](https://cdn-img.czl.net/2023/07/29/64c3eefec26cd.png)
+
+## sk查询示例（5刀未绑卡key）
+
+![1690562178945.png](https://cdn-img.czl.net/2023/07/29/64c3ee9070310.png)
+
 
 ## SESS ID获取方法
 
