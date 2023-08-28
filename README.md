@@ -1,9 +1,17 @@
 # openai-billing-query
 批量可视化查询openai(chatgpt)余额，支持显示总量，已使用，剩余量，已用比例，到期时间，GPT-4，是否绑卡
 
+star,please.
+
 ## [English](README_EN.md)
 
 Telegram交流群：https://t.me/ai_cn2023 
+
+## 最新示意图(2023.08.28)
+
+![1693219507531.png](https://cdn-img.czl.net/2023/08/28/64ec7ab5a1ee0.png)
+![ce5f86c2-76cc-44cf-887a-0aff8b4a1f1e.jpeg](https://cdn-img.czl.net/2023/08/28/64ec7abb90408.jpeg)
+![b90a990e-bb8f-47e5-9101-ac841a727993.jpeg](https://cdn-img.czl.net/2023/08/28/64ec7abc78659.jpeg)
 
 ## 更新日志
 ### 8月26日更新
