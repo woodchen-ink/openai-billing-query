@@ -9,40 +9,9 @@ Telegram交流群：https://t.me/ai_cn2023
 
 ## 最新示意图(2023.08.28)
 
-![1693219507531.png](https://cdn-img.czl.net/2023/08/28/64ec7ab5a1ee0.png)
-![ce5f86c2-76cc-44cf-887a-0aff8b4a1f1e.jpeg](https://cdn-img.czl.net/2023/08/28/64ec7abb90408.jpeg)
-![b90a990e-bb8f-47e5-9101-ac841a727993.jpeg](https://cdn-img.czl.net/2023/08/28/64ec7abc78659.jpeg)
-
-## 更新日志
-### 8月26日更新
-1. 有效检查改为发送请求，不再使用正则；
-
-### 8月22日更新
-
-1. 组织信息增加`userid`和`创建时间`；
-
-### 7月29日更新（点个star吧）
-
-1. 新增GPT-3.5查询、绑卡信息（人名和地址）、组织名称、邮箱、组织ID、是否有效；
-2. 使用sk查询不再整体报错，而是展示可以查询到的内容；
-
-### 7月22日更新后，如要查看完整信息，需登录一次账号，F12查看sess码，使用sess码进行查询
-
-7月22日更新后，已删除key校验规则，需使用sess码进行查询。使用key只能查询部分信息。
-
-![1689957580942.png](https://cdn-img.czl.net/2023/07/22/64bab4daba587.png)
-
-## sess查询示例（120刀4.0key）
-
-![1690562370550.png](https://cdn-img.czl.net/2023/07/29/64c3ef5003257.png)
-
-## sk查询示例(120刀4.0key)
-
-![1690562289330.png](https://cdn-img.czl.net/2023/07/29/64c3eefec26cd.png)
-
-## sk查询示例（5刀未绑卡key）
-
-![1690562178945.png](https://cdn-img.czl.net/2023/07/29/64c3ee9070310.png)
+![img_v2_29c139e9-9114-42bc-a23d-cba36e635d1g.jpg](https://cdn-img.czl.net/2023/08/28/64eca918b5668.jpg)
+![img_v2_388e4f50-a9ee-452d-b0f1-16773bdfc9fg.jpg](https://cdn-img.czl.net/2023/08/28/64eca91cc90fe.jpg)
+![img_v2_0c1ed439-59b4-4a4a-bf82-b43bd97458ag.jpg](https://cdn-img.czl.net/2023/08/28/64eca9202c6d7.jpg)
 
 
 ## SESS ID获取方法
@@ -55,8 +24,6 @@ Telegram交流群：https://t.me/ai_cn2023
 ``` html
 <option value="反代网址">【自定义名称】自定义名称</option>
 ```
-## 反代代码示例
-![image](https://github.com/woodchen-ink/openai-billing-query/assets/95951386/0bcdb51b-de08-49bc-bd01-5bf731f53d02)
 
 ## 怎么部署
 下载index.html直接打开就行，除了背景图片，没有任何外部资源。
