@@ -492,10 +492,27 @@
         }
         //获取是否绑卡
         try {
-          isSubscrible = subscriptionData.plan.id.includes('payg') ? '✅' : '❌';
+          if (subscriptionData.plan.id.includes('payg')) {
+            switch (subscriptionData.billing_mechanism) {
+              case 'advance':
+                isSubscrible = '✅预付费';
+                break;
+              case 'arrears':
+                isSubscrible = '✅已欠费';
+                break;
+              case null:
+                isSubscrible = '✅后付费';
+                break;
+              default:
+                isSubscrible = '✅';
+            }
+          } else {
+            isSubscrible = '❌';
+          }
         } catch (error) {
           console.error(error);
         }
+
         //获取绑卡信息
         try {
           // 从 subscriptionData 中获取 SubscribleInformation 的值...
