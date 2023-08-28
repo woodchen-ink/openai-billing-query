@@ -409,14 +409,14 @@
         <th style="width: 50px;">总额度</th>
         <th style="width: 50px">已使用</th>
         <th style="width: 50px">剩余量</th>
-        <th style="width: 100px">已用比例</th>
+        <th style="width: 90px">已用比例</th>
         <th style="width: 90px">到期时间</th>
         <th style="width: 50px">GPT-3.5</th>
         <th style="width: 50px">GPT-4</th>
         <th style="width: 50px">32K</th>
         <th style="width: 50px">绑卡</th>
-        <th style="width: 220px">绑卡信息</th>
-        <th style="width: 100px">组织信息</th>
+        <th style="width: 200px">绑卡信息</th>
+        <th style="width: 200px">组织信息</th>
         <th style="width: 50px;">是否有效</th>
       </tr>
     </thead>
@@ -456,6 +456,7 @@
       const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`;
       let urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
       const urlsetid = apiUrl + '/v1/organizations';
+      const urlPaymentmethods = `${apiUrl}/v1/dashboard/billing/payment_methods`;
 
 
 
@@ -524,19 +525,33 @@
           let billingAddress = subscriptionData.billing_address; // 定义并赋值 billingAddress
           let businessAddress = subscriptionData.business_address; // 定义并赋值 businessAddress
 
-          SubInformation = "Account Name: " + SubscribleInformation.account_name + "---";
-          SubInformation += "PO Number: " + SubscribleInformation.po_number + "---";
-          SubInformation += "Billing Email: " + SubscribleInformation.billing_email + "---";
-          SubInformation += "Tax IDs: " + SubscribleInformation.tax_ids + "---";
+          SubInformation = "名称: " + SubscribleInformation.account_name + "\n";
+          SubInformation += "PO号: " + SubscribleInformation.po_number + "\n";
+          SubInformation += "帐单邮箱: " + SubscribleInformation.billing_email + "\n";
+          SubInformation += "税号: " + SubscribleInformation.tax_ids + "\n";
           //使用 JavaScript 的可选链式调用来确定是否为null，避免异常控制台报错
-          SubInformation += "Billing Address: " + (billingAddress?.line1 ? billingAddress.line1 : '') + ", " + (billingAddress?.city ? billingAddress.city : '') + ", " + (billingAddress?.state ? billingAddress.state : '') + ", " + (billingAddress?.country ? billingAddress.country : '') + ", " + (billingAddress?.postal_code ? billingAddress.postal_code : '') + "---";
-          SubInformation += "Business Address: " + (businessAddress?.line1 ? businessAddress.line1 : '') + ", " + (businessAddress?.city ? businessAddress.city : '') + ", " + (businessAddress?.state ? businessAddress.state : '') + ", " + (businessAddress?.country ? businessAddress.country : '') + ", " + (businessAddress?.postal_code ? businessAddress.postal_code : '');
+          SubInformation += "账单地址: " + (billingAddress?.line1 ? billingAddress.line1 : '') + ", " + (billingAddress?.city ? billingAddress.city : '') + ", " + (billingAddress?.state ? billingAddress.state : '') + ", " + (billingAddress?.country ? billingAddress.country : '') + ", " + (billingAddress?.postal_code ? billingAddress.postal_code : '') + "\n";
+          SubInformation += "商业地址: " + (businessAddress?.line1 ? businessAddress.line1 : '') + ", " + (businessAddress?.city ? businessAddress.city : '') + ", " + (businessAddress?.state ? businessAddress.state : '') + ", " + (businessAddress?.country ? businessAddress.country : '') + ", " + (businessAddress?.postal_code ? businessAddress.postal_code : '\n');
 
+          // 获取付款方法信息
+          response = await fetch(urlPaymentmethods, { headers });
+          const paymentMethodsData = await response.json();
 
+          if (paymentMethodsData.data && paymentMethodsData.data.length > 0) {
+            const paymentMethod = paymentMethodsData.data[0];
+            if (paymentMethod.type === 'card' && paymentMethod.card) {
+              const cardInfo = paymentMethod.card;
+              SubInformation += `卡种: ${cardInfo.brand} \n`; // Card Brand
+              SubInformation += `后4位: ${cardInfo.last4} \n`; // Card Last4
+              SubInformation += `卡日期: ${cardInfo.exp_month}/${cardInfo.exp_year} \n`; // Card Expiry
+              SubInformation += `卡国家: ${cardInfo.country}`; // Card Country
+            }
+          }
         }
         catch (error) {
           console.error(error);
         }
+
         //组织信息
         try {
           response = await fetch(urlsetid, { headers });
@@ -558,10 +573,17 @@
 
           if (typeof setiddata.data[1] !== 'undefined') {
             const id2 = setiddata.data[1].id;
-            setid = `${title}----${email}----${id1}----${id2}----${name}----${description}----${formattedDate} ${timeAndZone}`;
+            setid = `${title}\n${email}\n${id1}\n${id2}\n${name}\n${description}\n${formattedDate} ${timeAndZone}`;
           } else {
-            setid = `${title}----${email}----${id1}----${name}----${description}----${formattedDate} ${timeAndZone}`;
+            setid = `${title}\n${email}\n${id1}\n${name}\n${description}\n${formattedDate} ${timeAndZone}`;
           }
+          if (typeof setiddata.data[1] !== 'undefined') {
+            const id2 = setiddata.data[1].id;
+            setid = `人名: ${title}\n邮箱: ${email}\n组织: ${id1} ${id2}\nUserID:${name}\n\n注册时间:${formattedDate} ${timeAndZone}`;
+          } else {
+            setid = `人名: ${title}\n邮箱: ${email}\n组织: ${id1} \nUserID:${name}\n注册时间:${formattedDate} ${timeAndZone}`;
+          }
+
         } catch (error) {
           console.error(error);
           errors['setid'] = error.message;
@@ -781,15 +803,25 @@
             row.appendChild(GPT432kCheckResult);
 
             let isSubscribe = document.createElement("td");
+            isSubscribe.style.whiteSpace = "pre"; // 添加这一行来保留换行
             isSubscribe.textContent = data[7];
             row.appendChild(isSubscribe);
 
             let SubInformation = document.createElement("td");
-            SubInformation.textContent = data[8];
+            let SubInformationContainer = document.createElement("div");
+            SubInformationContainer.style.whiteSpace = "pre-wrap";
+            SubInformationContainer.textContent = data[8];
+            SubInformation.appendChild(SubInformationContainer);
             row.appendChild(SubInformation);
 
+
             let setidCell = document.createElement("td");
-            setidCell.textContent = data[9];
+            let setidCellContainer = document.createElement("div");
+            setidCellContainer.style.whiteSpace = "pre-wrap";
+            setidCellContainer.textContent = data[9];
+            setidCell.appendChild(setidCellContainer);
+            // setidCell.style.whiteSpace = "pre"; // 添加这一行来保留换行
+            // setidCell.textContent = data[9];
             row.appendChild(setidCell);
 
 
