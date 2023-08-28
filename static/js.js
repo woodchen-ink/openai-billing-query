@@ -1,3 +1,15 @@
+var modal = document.getElementById("myModal");
+var span = document.getElementsByClassName("close")[0];
+span.onclick = function () {
+    modal.style.display = "none";
+}
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
 let queriedApiKeys = [];
 let serialNumber = 1;
 
@@ -362,6 +374,20 @@ function sendRequest() {
                 progressCell.appendChild(progressContainer); // 将容器添加到单元格中
                 row.appendChild(progressCell);
 
+                function createSeeMoreLink(text) {
+                    let seeMoreLink = document.createElement("a");
+                    seeMoreLink.href = "#";
+                    seeMoreLink.textContent = '全部';
+                    seeMoreLink.style.cursor = "pointer";
+                    seeMoreLink.style.textDecoration = "underline";
+                    seeMoreLink.onclick = (event) => {
+                        event.preventDefault();
+                        document.getElementById('modalText').textContent = text;
+                        document.getElementById('myModal').style.display = "block";
+                    };
+                    return seeMoreLink;
+                }
+
 
 
                 let expireTime = document.createElement("td");
@@ -388,7 +414,12 @@ function sendRequest() {
                 let SubInformation = document.createElement("td");
                 let SubInformationContainer = document.createElement("div");
                 SubInformationContainer.style.whiteSpace = "pre-wrap";
-                SubInformationContainer.textContent = data[8];
+                if (data[8].length > 50) {
+                    SubInformationContainer.textContent = data[8].slice(0, 25) + '... ';
+                    SubInformationContainer.appendChild(createSeeMoreLink(data[8]));
+                } else {
+                    SubInformationContainer.textContent = data[8];
+                }
                 SubInformation.appendChild(SubInformationContainer);
                 row.appendChild(SubInformation);
 
@@ -396,22 +427,36 @@ function sendRequest() {
                 let setidCell = document.createElement("td");
                 let setidCellContainer = document.createElement("div");
                 setidCellContainer.style.whiteSpace = "pre-wrap";
-                setidCellContainer.textContent = data[9];
+                if (data[9].length > 50) {
+                    setidCellContainer.textContent = data[9].slice(0, 25) + '... ';
+                    setidCellContainer.appendChild(createSeeMoreLink(data[9]));
+
+                } else {
+                    setidCellContainer.textContent = data[9];
+                }
                 setidCell.appendChild(setidCellContainer);
                 row.appendChild(setidCell);
+
 
                 let rateLimitsDataCell = document.createElement("td");
                 let rateLimitsDataContainer = document.createElement("div");
                 rateLimitsDataContainer.style.whiteSpace = "pre-wrap";
-                if (data[13]) { // checking if rateLimits data exists
+                if (data[13]) {
                     let rateLimitsData = data[13];
                     let models = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-32k'];
+                    let rateLimitsText = '';
                     for (let model of models) {
                         if (rateLimitsData[model]) {
-                            rateLimitsDataContainer.textContent += `${model}:\n\tRPM: ${rateLimitsData[model].max_requests_per_1_minute}\n\tTPM: ${rateLimitsData[model].max_tokens_per_1_minute}\n\n`;
+                            rateLimitsText += `${model}:\n\tRPM: ${rateLimitsData[model].max_requests_per_1_minute}\n\tTPM: ${rateLimitsData[model].max_tokens_per_1_minute}\n\n`;
                         } else {
-                            rateLimitsDataContainer.textContent += model + ": ❌\n";
+                            rateLimitsText += model + ": ❌\n";
                         }
+                    }
+                    if (rateLimitsText.length > 50) {
+                        rateLimitsDataContainer.textContent = rateLimitsText.slice(0, 25) + '... ';
+                        rateLimitsDataContainer.appendChild(createSeeMoreLink(rateLimitsText));
+                    } else {
+                        rateLimitsDataContainer.textContent = rateLimitsText;
                     }
                 }
 

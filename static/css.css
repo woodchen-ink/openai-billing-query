@@ -183,16 +183,8 @@ button.loading::before {
 }
 
 footer {
-    /* padding: 2px; */
-    /* border-top: 1px solid var(--border-color); */
     text-align: center;
-    /* opacity: .5; */
-    /* position: fixed; */
-    /* bottom: 0; */
-    /* left: 0; */
     margin-top: 20px;
-    /* width: 100%; */
-    /* background-color:#212121; */
     line-height: unset !important;
     line-height: normal;
 }
@@ -355,3 +347,102 @@ button.loading::before {
     height: .75rem;
     animation: rotate .5s linear infinite;
 }
+
+@media screen and (max-width: 768px) {
+    /* 在小于768px的屏幕上生效的样式 */
+
+    /* 可以减小字体和表格单元格的大小，使其适应小屏设备 */
+    #result-table th, #result-table td {
+        font-size: 8px;
+        padding: 5px 3px;
+    }
+
+    /* 可以隐藏一些不是非常重要的列，以便更有效地利用屏幕空间 */
+    #result-table th:nth-child(n+12), #result-table td:nth-child(n+12) {
+        display: none;
+    }
+}
+
+#result-table {
+    border-collapse: separate;
+    border-spacing: 0 5px;
+    /* padding: 5px; */
+}
+
+
+#result-table td {
+    vertical-align: top;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    position: relative;
+    display: flex;  
+    flex-direction: column;  
+    background-color: #fefefe;
+    color: #000000;
+    margin: auto;
+    width: 410px;
+    height: auto;
+    max-height: 80%;
+    border-radius: 12px;
+    white-space: pre-wrap;
+}
+.modal h2{
+    margin:8px;
+}
+.modal p{
+    margin-block-start:0;
+    margin-block-end: 0;
+}
+
+.close {
+    color: #FFF;
+    font-size: 28px;
+    font-weight: bold;
+    align-self: flex-end;  
+    margin:8px;  
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 0px;  
+    background-color: var(--color-primary);
+    color: white;
+    display: flex;  
+    justify-content: space-between;  
+    align-items: center;  
+    border-radius: 12px 12px 0px 0px;
+}
+
+.modal-body {
+    padding: 10px 16px;
+    overflow-y: auto;  
+    display: flex;
+    align-items: flex-start;
+}
+
+#modalText{
+    margin: 0;
+}
+
+
+
