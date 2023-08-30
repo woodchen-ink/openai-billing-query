@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>获取SESS</title>
+  <meta name="description" content="批量获取OPENAI账号的sess id">
+  <link rel="stylesheet" href="./static/css.css" type="text/css" />
+</head>
+
+<body>
+  <header>
+    <h1 class="text-3xl font-semibold text-center mb-8 text-gradient">获取SESS</h1>
+  </header>
+
+  <div class="query">
+    <div>
+      <h2 style="display: inline-block;">输入 API KEY</h2>
+      <p style="display: inline-block; font-size: smaller;">通过fakeopen.com获取，自行考虑风险。</p>
+    </div>
+    <textarea id="api-key-input" placeholder="请输入 账号和密码，用 --- 分开，前后有两个空格"></textarea></p>
+  </div>
+  <button :class="{ loading }" :disabled="loading" onclick="sendRequest()">查询</button> </p>
+  </div>
+  <h2 id="result-head" style="visibility:hidden">查询结果</h2>
+  <table id="result" style="visibility:hidden">
+    <thead>
+      <tr>
+        <th style="width:35px">序号</th>
+        <th>邮箱</th>
+        <th style="width: 50px;">user-id</th>
+        <th >sess</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+
+  <footer>
+    <p>广告链接：
+      <a href="https://chat.czl.net" target="_blank">CZLChat</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://oapi.czl.net" target="_blank">CZLOapi</a>
+      <br>
+      本网页由<a href="https://woodchen.ink" target="_blank">woodchen</a>开源于<a
+        href="https://github.com/woodchen-ink/openai-billing-query" target="_blank">Github</a>,欢迎给个star
+    </p>
+
+  </footer>
+  <script src="./static/sess.js"></script>
+
+</body>
+
+</html>
