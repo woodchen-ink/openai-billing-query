@@ -283,6 +283,10 @@ input#custom-url-input {
     /* border: 1px solid #d3d3d3; */
 }
 
+/* #result-table tr{
+    border-radius: 8px;
+} */
+
 /* 下面的代码定义了结果表格奇数行的背景颜色 */
 #result-table tbody tr:nth-child(odd) {
     background-color: #252422;
@@ -443,6 +447,7 @@ button.loading::before {
 #modalText{
     margin: 0;
 }
+
 
 
 
