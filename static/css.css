@@ -272,6 +272,7 @@ input#custom-url-input {
     height: 20px;
     padding: 10px 5px;
     text-align: left;
+    border-radius: 8px;
     /* border: 1px solid #dcdcdc; */
 }
 
@@ -280,6 +281,7 @@ input#custom-url-input {
     height: 20px;
     text-align: left;
     padding: 10px 5px;
+    border-radius: 8px;
     /* border: 1px solid #d3d3d3; */
 }
 
@@ -443,6 +445,7 @@ button.loading::before {
 #modalText{
     margin: 0;
 }
+
 
 
 
