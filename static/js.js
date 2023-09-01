@@ -289,7 +289,7 @@ function sendRequest() {
         apiUrl = apiUrlSelect.value;
     }
 
-    let apiKeys = apiKeyInput.value.split(/[,\s，\n]+/);
+    let apiKeys = parseKeys(apiKeyInput.value);
 
     if (apiKeys.length === 0) {
         alert("未匹配到 API-KEY，请检查输入内容");
@@ -297,6 +297,22 @@ function sendRequest() {
     }
 
     alert("成功匹配到 API Key，确认后开始查询：" + apiKeys);
+
+    function parseKeys(input) {
+        let lines = input.split(/\n/);
+        let result = [];
+        for (let line of lines) {
+            if (line.includes("sk-") && line.includes("sess-")) {
+                let sessKey = line.match(/sess-[^\-]+/)[0];
+                result.push(sessKey);
+            }
+            else if (line.includes("sk-")) {
+                let skKey = line.match(/sk-[^\-]+/)[0];
+                result.push(skKey);
+            }
+        }
+        return result;
+    }
 
     let lastQueryPromise = null;
 
