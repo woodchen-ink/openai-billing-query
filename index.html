@@ -15,8 +15,8 @@
 </head>
 
 <body class="bg-gray-900 text-white">
-  <div class="container w-full">
-    <div class="sidebar bg-gray-800 bg-opacity-60 p-8 relative">
+  <div class="container w-full mx-auto px-4">
+    <div class="sidebar bg-gray-800 bg-opacity-60 p-8 relative overflow-y-auto">
       <header>
         <h1 class="text-2xl font-semibold mb-8 text-gradient">OpenAI API 信息查询</h1>
         <p class="mt-3 text-sm">页面列表：</p>
@@ -51,17 +51,18 @@
           class="w-full bg-gray-700 border border-gray-500 rounded px-3 py-2 mt-2 text-gray-400 hidden" />
       </div>
 
+
       <div class="flex mt-4">
-        <div id="subinfo-toggle" class="form-control w-1/2">
+        <div id="subinfo-toggle" class="form-control w-1/3">
           <label class="label">
-            <span class="label-text text-warning">显示/隐藏 绑卡信息</span>
+            <span class="label-text text-warning">绑卡信息</span>
           </label>
           <input type="checkbox" class="toggle toggle-primary" onchange="toggleSubInfo()">
         </div>
 
-        <div id="setid-toggle" class="form-control w-1/2">
+        <div id="setid-toggle" class="form-control w-1/3">
           <label class="label">
-            <span class="label-text text-warning">显示/隐藏 组织信息</span>
+            <span class="label-text text-warning">组织信息</span>
           </label>
           <input type="checkbox" class="toggle toggle-primary" onchange="toggleSetidInfo()">
         </div>
@@ -72,24 +73,24 @@
         查询
       </button>
 
-      <footer class="footer bg-gray-800 text-white absolute bottom-0  left-0  ">
-        <div class="alert">
+      <div class="toast ">
+        <div class="alert alert-info">
           <p>广告链接：
-            <a href="https://chat.czl.net" target="_blank" class="text-accent">CZLChat</a> <a
-              href="https://oapi.czl.net" target="_blank" class="text-accent">CZLOapi</a>
-            <a href="https://store0.czl.net" target="_blank" class="text-accent">CZL Store</a>
-            <br> 本网页由<a href="https://woodchen.ink" target="_blank" class="text-accent">woodchen</a>开源于<a
+            <a href="https://chat.czl.net" target="_blank" class="link link-hover">CZLChat</a> <a
+              href="https://oapi.czl.net" target="_blank" class="link link-hover">CZLOapi</a>
+            <a href="https://store0.czl.net" target="_blank" class="link link-hover">CZL Store</a>
+            <br> 本网页由<a href="https://woodchen.ink" target="_blank" class="link link-hover">woodchen</a>开源于<a
               href="https://github.com/woodchen-ink/openai-billing-query" target="_blank"
-              class="text-accent">Github</a>,欢迎给个star
+              class="link link-hover">Github</a>,欢迎给个star
           </p>
         </div>
-      </footer>
+      </div>
     </div>
 
-    <div class="content pl-6">
-      <h2 class="textarea-lg">查询结果</h2>
+    <div class="content pl-6 pt-6">
+      <h2 class="text-2xl  mb-6 font-semibold text-gradient">查询结果</h2>
       <div class="overflow-x-auto">
-        <div class="overflow-y-hidden">
+        <div class="overflow-y-hidden ">
           <table id="result-table" class="table table-xs bg-neutral-content/20 w-full">
             <thead class="text-white">
               <tr>
