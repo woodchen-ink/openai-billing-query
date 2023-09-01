@@ -42,6 +42,7 @@ async function checkBilling(apiKey, apiUrl) {
     const urlsetid = apiUrl + '/v1/organizations';
     const urlPaymentmethods = `${apiUrl}/v1/dashboard/billing/payment_methods`;
     const urlRatelimits = `${apiUrl}/v1/dashboard/rate_limits`;
+    const urlAdvanceData = apiUrl + '/dashboard/billing/credit_grants'; // 预付费查询接口
 
     try {
         let totalAmount, totalUsage, remaining, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult, setid, isSubscrible;
@@ -55,9 +56,17 @@ async function checkBilling(apiKey, apiUrl) {
         const formattedDate = `${expiryDate.getFullYear()}-${(expiryDate.getMonth() + 1).toString().padStart(2, '0')}-${expiryDate.getDate().toString().padStart(2, '0')}`;
 
         try {
-            totalAmount = subscriptionData.system_hard_limit_usd;
+            totalAmount = subscriptionData.hard_limit_usd;
 
-            if (totalAmount > 3) {
+
+            const advanceDataResponse = await fetch(urlAdvanceData, { headers });
+            const advanceData = await advanceDataResponse.json();
+            if ((subscriptionData.billing_mechanism === 'advance') || (totalAmount <= 6 && !subscriptionData.has_credit_card)) {
+                totalAmount = advanceData.total_granted;
+            }
+            
+
+            if (totalAmount > 6) {
                 startDate = subDate;
                 urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
                 response = await fetch(urlUsage, { headers });
@@ -66,11 +75,13 @@ async function checkBilling(apiKey, apiUrl) {
             response = await fetch(urlUsage, { headers });
             const usageData = await response.json();
             totalUsage = usageData.total_usage / 100;
-            remaining = currentDate > expiryDate ? "❌过期" : (totalAmount - totalUsage).toFixed(3);
+            remaining = (totalAmount - totalUsage).toFixed(3);
+            
         } catch (error) {
             console.error(error);
             errors['subscription'] = error.message;
         }
+
         //获取是否绑卡
         try {
             if (subscriptionData.plan.id.includes('payg')) {
@@ -254,8 +265,6 @@ function sendRequest() {
     let apiUrlSelect = document.getElementById("api-url-select");
     let customUrlInput = document.getElementById("custom-url-input");
     let table = document.getElementById("result-table");
-    // let h2 = document.getElementById("result-head");
-    // h2.style.visibility = "visible";
     table.style.visibility = "visible";
 
     if (apiKeyInput.value.trim() === "") {
@@ -336,7 +345,7 @@ function sendRequest() {
 
                 let totalUsedCell = document.createElement("td");
                 if (!isNaN(data[1])) {
-                    totalUsedCell.textContent = data[1].toFixed(3);
+                    totalUsedCell.textContent = data[1];
                 } else {
                     totalUsedCell.textContent = '❌'
                 }
@@ -473,7 +482,7 @@ function sendRequest() {
                 queriedApiKeys = [];
             }
             serialNumber++; // 增加序列号
-            h2.style.display = 'block';
+            // h2.style.display = 'block';
             table.style.display = 'table';
 
             hideLoadingAnimation();
