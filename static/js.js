@@ -1,18 +1,29 @@
-var modal = document.getElementById("myModal");
-var span = document.getElementsByClassName("close")[0];
-span.onclick = function () {
-    modal.style.display = "none";
-}
-window.onclick = function (event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+function toggleSubInfo() {
+    let toggle = document.querySelector("#subinfo-toggle input");
+    let display = toggle.checked ? "" : "none";
+
+    let subInfoHeader = document.getElementById("subinfo-header");
+    subInfoHeader.style.display = display;
+
+    let subInfoCells = document.querySelectorAll("td.subinfo");
+    subInfoCells.forEach(function (cell) { cell.style.display = display; });
 }
 
+function toggleSetidInfo() {
+    let toggle = document.querySelector("#setid-toggle input");
+    let display = toggle.checked ? "" : "none";
+
+    let setIdHeader = document.getElementById("setid-header");
+    setIdHeader.style.display = display;
+
+    let setIdCells = document.querySelectorAll("td.setid");
+    setIdCells.forEach(function (cell) { cell.style.display = display; });
+}
+toggleSubInfo();
+toggleSetidInfo();
 
 let queriedApiKeys = [];
 let serialNumber = 1;
-
 
 async function checkBilling(apiKey, apiUrl) {
     const now = new Date();
@@ -37,9 +48,7 @@ async function checkBilling(apiKey, apiUrl) {
         let SubscribleInformation = {};
         let SubInformation;
         let errors = {};
-
         let response = await fetch(urlSubscription, { headers });
-
         let currentDate = new Date();
         const subscriptionData = await response.json();
         const expiryDate = new Date(subscriptionData.access_until * 1000 + 8 * 60 * 60 * 1000);
@@ -48,7 +57,7 @@ async function checkBilling(apiKey, apiUrl) {
         try {
             totalAmount = subscriptionData.system_hard_limit_usd;
 
-            if (totalAmount > 20) {
+            if (totalAmount > 3) {
                 startDate = subDate;
                 urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
                 response = await fetch(urlUsage, { headers });
@@ -84,7 +93,6 @@ async function checkBilling(apiKey, apiUrl) {
         } catch (error) {
             console.error(error);
         }
-
         //获取绑卡信息
         try {
             // 从 subscriptionData 中获取 SubscribleInformation 的值...
@@ -103,7 +111,6 @@ async function checkBilling(apiKey, apiUrl) {
             //使用 JavaScript 的可选链式调用来确定是否为null，避免异常控制台报错
             SubInformation += "账单地址: " + (billingAddress?.line1 ? billingAddress.line1 : '') + ", " + (billingAddress?.city ? billingAddress.city : '') + ", " + (billingAddress?.state ? billingAddress.state : '') + ", " + (billingAddress?.country ? billingAddress.country : '') + ", " + (billingAddress?.postal_code ? billingAddress.postal_code : '') + "\n";
             SubInformation += "商业地址: " + (businessAddress?.line1 ? businessAddress.line1 : '') + ", " + (businessAddress?.city ? businessAddress.city : '') + ", " + (businessAddress?.state ? businessAddress.state : '') + ", " + (businessAddress?.country ? businessAddress.country : '') + ", " + (businessAddress?.postal_code ? businessAddress.postal_code : '\n');
-
             // 获取付款方法信息
             response = await fetch(urlPaymentmethods, { headers });
             const paymentMethodsData = await response.json();
@@ -126,7 +133,6 @@ async function checkBilling(apiKey, apiUrl) {
         catch (error) {
             console.error(error);
         }
-
         //组织信息
         try {
             response = await fetch(urlsetid, { headers });
@@ -140,12 +146,9 @@ async function checkBilling(apiKey, apiUrl) {
             const description = setiddata.data[0].description;
             const createdTimestamp = setiddata.data[0].created;
             const createdDate = new Date(createdTimestamp * 1000);
-
             // 格式化日期
             const formattedDate = `${createdDate.getFullYear()}.${(createdDate.getMonth() + 1).toString().padStart(2, '0')}.${createdDate.getDate().toString().padStart(2, '0')}`;
-
             const timeAndZone = createdDate.toString().match(/\d{2}:\d{2}:\d{2} \w+/)[0];
-
             if (typeof setiddata.data[1] !== 'undefined') {
                 const id2 = setiddata.data[1].id;
                 setid = `${title}\n${email}\n${id1}\n${id2}\n${name}\n${description}\n${formattedDate} ${timeAndZone}`;
@@ -163,7 +166,6 @@ async function checkBilling(apiKey, apiUrl) {
             console.error(error);
             errors['setid'] = error.message;
         }
-
         //获取速率
         let rateLimits;
         try {
@@ -179,9 +181,6 @@ async function checkBilling(apiKey, apiUrl) {
             console.error(error);
             errors['rateLimits'] = error.message;
         }
-
-
-
         // 初始化模型查询结果
         GPT35CheckResult = '❌';
         GPT4CheckResult = '❌';
@@ -191,22 +190,14 @@ async function checkBilling(apiKey, apiUrl) {
         try {
             const modelsCheckResponse = await fetch(modelsCheck, { headers });
             const modelsCheckData = await modelsCheckResponse.json();
+
             GPT35CheckSuccess = GPT35CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-3.5-turbo')) ? '✅' : '❌';
-        } catch (error) {
-            console.error(error);
-            errors['modelsCheck'] = error.message;
-        }
-        //4模型查询
-        try {
-            const modelsCheckResponse = await fetch(modelsCheck, { headers });
-            const modelsCheckData = await modelsCheckResponse.json();
             GPT4CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
             GPT432kCheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
         } catch (error) {
             console.error(error);
             errors['modelsCheck'] = error.message;
         }
-        // 是否有效查询
         async function checkCompletion(apiKey, apiUrl) {
             const urlCompletion = `${apiUrl}/v1/chat/completions`;
             const headers = {
@@ -245,9 +236,6 @@ async function checkBilling(apiKey, apiUrl) {
     }
 }
 
-
-
-
 function formatDate(date) {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -258,17 +246,16 @@ function formatDate(date) {
 
 //查询函数
 function sendRequest() {
-    let button = document.querySelector("button");
-    button.textContent = "加载中...";
-    button.disabled = true;
-    button.classList.add("loading")
+    showLoadingAnimation();
+    toggleSubInfo();
+    toggleSetidInfo();
 
     let apiKeyInput = document.getElementById("api-key-input");
     let apiUrlSelect = document.getElementById("api-url-select");
     let customUrlInput = document.getElementById("custom-url-input");
     let table = document.getElementById("result-table");
-    let h2 = document.getElementById("result-head");
-    h2.style.visibility = "visible";
+    // let h2 = document.getElementById("result-head");
+    // h2.style.visibility = "visible";
     table.style.visibility = "visible";
 
     if (apiKeyInput.value.trim() === "") {
@@ -301,6 +288,8 @@ function sendRequest() {
     }
 
     alert("成功匹配到 API Key，确认后开始查询：" + apiKeys);
+
+    let lastQueryPromise = null;
 
     let tableBody = document.querySelector("#result-table tbody");
     for (let i = 0; i < apiKeys.length; i++) {
@@ -394,17 +383,25 @@ function sendRequest() {
                 expireTime.textContent = data[3];
                 row.appendChild(expireTime);
 
+
                 let GPT35CheckResult = document.createElement("td");
                 GPT35CheckResult.textContent = data[4];
-                row.appendChild(GPT35CheckResult);
-
                 let GPT4CheckResult = document.createElement("td");
                 GPT4CheckResult.textContent = data[5];
-                row.appendChild(GPT4CheckResult);
-
                 let GPT432kCheckResult = document.createElement("td");
                 GPT432kCheckResult.textContent = data[6];
-                row.appendChild(GPT432kCheckResult);
+                let highestModel = document.createElement("td");
+                if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "❌" && GPT432kCheckResult.textContent === "❌") {
+                    highestModel.textContent = "gpt3.5";
+                } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "❌") {
+                    highestModel.textContent = "gpt4";
+                } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "✅") {
+                    highestModel.textContent = "gpt4-32K";
+                } else {
+                    highestModel.textContent = "❌";
+                }
+
+                row.appendChild(highestModel);
 
                 let isSubscribe = document.createElement("td");
                 isSubscribe.style.whiteSpace = "pre"; // 添加这一行来保留换行
@@ -412,30 +409,24 @@ function sendRequest() {
                 row.appendChild(isSubscribe);
 
                 let SubInformation = document.createElement("td");
+                SubInformation.classList.add("subinfo");
                 let SubInformationContainer = document.createElement("div");
                 SubInformationContainer.style.whiteSpace = "pre-wrap";
-                if (data[8].length > 50) {
-                    SubInformationContainer.textContent = data[8].slice(0, 25) + '... ';
-                    SubInformationContainer.appendChild(createSeeMoreLink(data[8]));
-                } else {
-                    SubInformationContainer.textContent = data[8];
-                }
+                SubInformationContainer.textContent = data[8];
+
                 SubInformation.appendChild(SubInformationContainer);
                 row.appendChild(SubInformation);
+                SubInformation.style.display = document.querySelector("#subinfo-toggle input").checked ? "" : "none";
 
 
                 let setidCell = document.createElement("td");
+                setidCell.classList.add("setid");
                 let setidCellContainer = document.createElement("div");
                 setidCellContainer.style.whiteSpace = "pre-wrap";
-                if (data[9].length > 50) {
-                    setidCellContainer.textContent = data[9].slice(0, 25) + '... ';
-                    setidCellContainer.appendChild(createSeeMoreLink(data[9]));
-
-                } else {
-                    setidCellContainer.textContent = data[9];
-                }
+                setidCellContainer.textContent = data[9];
                 setidCell.appendChild(setidCellContainer);
                 row.appendChild(setidCell);
+                setidCell.style.display = document.querySelector("#setid-toggle input").checked ? "" : "none";
 
 
                 let rateLimitsDataCell = document.createElement("td");
@@ -447,17 +438,22 @@ function sendRequest() {
                     let rateLimitsText = '';
                     for (let model of models) {
                         if (rateLimitsData[model]) {
-                            rateLimitsText += `${model}:\n\tRPM: ${rateLimitsData[model].max_requests_per_1_minute}\n\tTPM: ${rateLimitsData[model].max_tokens_per_1_minute}\n\n`;
+                            let modelName = '';
+                            if (model === 'gpt-3.5-turbo') {
+                                modelName = 'gpt3.5';
+                            } else if (model === 'gpt-3.5-turbo-16k') {
+                                modelName = 'gpt3.5-16K';
+                            } else if (model === 'gpt-4') {
+                                modelName = 'gpt4';
+                            } else if (model === 'gpt-4-32k') {
+                                modelName = 'gpt4-32K';
+                            }
+                            rateLimitsText += `${modelName}: ${rateLimitsData[model].max_requests_per_1_minute}, ${rateLimitsData[model].max_tokens_per_1_minute}\n`;
                         } else {
                             rateLimitsText += model + ": ❌\n";
                         }
                     }
-                    if (rateLimitsText.length > 50) {
-                        rateLimitsDataContainer.textContent = rateLimitsText.slice(0, 25) + '... ';
-                        rateLimitsDataContainer.appendChild(createSeeMoreLink(rateLimitsText));
-                    } else {
-                        rateLimitsDataContainer.textContent = rateLimitsText;
-                    }
+                    rateLimitsDataContainer.textContent = rateLimitsText;
                 }
 
                 rateLimitsDataCell.appendChild(rateLimitsDataContainer);
@@ -480,22 +476,51 @@ function sendRequest() {
             h2.style.display = 'block';
             table.style.display = 'table';
 
-            button.textContent = "查询";
-            button.disabled = false;
-            button.classList.remove("loading")
-        })
+            hideLoadingAnimation();
 
+        })
+        lastQueryPromise = checkBilling(apiKey, apiUrl).then((data) => {
+            // 查询完成后的代码...
+
+            hideLoadingAnimation();
+        });
+    }
+    if (lastQueryPromise) {
+        lastQueryPromise.then(() => {
+            hideLoadingAnimation();
+        });
+    }
+
+}
+
+
+function toggleCustomUrlInput() {
+    const selectElement = document.getElementById("api-url-select");
+    const customUrlInput = document.getElementById("custom-url-input");
+
+    if (selectElement.value === "custom") {
+        customUrlInput.classList.remove("hidden");
+    } else {
+        customUrlInput.classList.add("hidden");
     }
 }
 
-let apiUrlSelect = document.getElementById("api-url-select");
-let customUrlInput = document.getElementById("custom-url-input");
+function showLoadingAnimation() {
+    const button = document.getElementById("query-button");
+    button.disabled = true;
+    button.innerHTML = `
+      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+        </path>
+      </svg>
+      加载中...
+    `;
+}
 
-apiUrlSelect.addEventListener("change", function () {
-    if (apiUrlSelect.value === "custom") {
-        customUrlInput.style.display = "inline-block";
-        customUrlInput.style.marginTop = "5px";
-    } else {
-        customUrlInput.style.display = "none";
-    }
-});
+function hideLoadingAnimation() {
+    const button = document.getElementById("query-button");
+    button.disabled = false;
+    button.innerHTML = "查询";
+}
+
