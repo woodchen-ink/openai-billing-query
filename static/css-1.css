@@ -1,6 +1,6 @@
 body {
     background: url('https://cdn-img.czl.net/2023/05/23/pjbczr.webp') no-repeat center center fixed;
-    background-size: cover;
+    background-size:cover;
 }
 
 html,
@@ -9,15 +9,9 @@ body {
 }
 
 .container {
-    display: flex;
-    height: 100VH;
+    /* display: flex; */
+    height: 100%;
 }
 
-.sidebar {
-    width: 30%;
-}
 
-.content {
-    width: 70%;
-}
 

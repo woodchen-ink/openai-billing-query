@@ -321,6 +321,7 @@ function sendRequest() {
             )
 
             let row = document.createElement("tr");
+            row.classList.add("hover:bg-gray-700");
 
             let serialNumberCell = document.createElement("td"); // 创建序列号单元格
             serialNumberCell.textContent = serialNumber; // 设置序列号文本
@@ -345,7 +346,7 @@ function sendRequest() {
 
                 let totalUsedCell = document.createElement("td");
                 if (!isNaN(data[1])) {
-                    totalUsedCell.textContent = data[1];
+                    totalUsedCell.textContent = data[1].toFixed(3);
                 } else {
                     totalUsedCell.textContent = '❌'
                 }
@@ -518,12 +519,7 @@ function showLoadingAnimation() {
     const button = document.getElementById("query-button");
     button.disabled = true;
     button.innerHTML = `
-      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-        </path>
-      </svg>
-      加载中...
+    <span class="loading loading-ring "></span>
     `;
 }
 

@@ -9,20 +9,17 @@
   <link rel="stylesheet" href="./static/css-1.css" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@3.6.4/dist/full.css" rel="stylesheet" type="text/css" />
-  <style>
-
-  </style>
 </head>
 
 <body class="bg-gray-900 text-white">
-  <div class="container w-full mx-auto px-4">
-    <div class="sidebar bg-gray-800 bg-opacity-60 p-8 relative overflow-y-auto">
+  <div class="container w-full mx-auto lg:flex">
+    <div class="sidebar  bg-gray-800 bg-opacity-60 p-8 relative overflow-y-auto lg:w-1/4 md:w-full">
       <header>
         <h1 class="text-2xl font-semibold mb-8 text-gradient">OpenAI API 信息查询</h1>
         <p class="mt-3 text-sm">页面列表：</p>
-        <a href="index.html" class="badge badge-accent">查API信息</a><br>
-        <a href="get_sess1.html" class="badge badge-accent">通过access token获取sess</a><br>
-        <a href="https://woodchen.ink/1266.html" class="badge badge-accent" target="_blank">手动获取sess的方法</a>
+        <a href="index.html" class="badge badge-accent hover:bg-base-100">查API信息</a><br>
+        <a href="get_sess1.html" class="badge badge-accent hover:bg-base-100">通过access token获取sess</a><br>
+        <a href="https://woodchen.ink/1266.html" class="badge badge-accent hover:bg-base-100" target="_blank">手动获取sess的方法</a>
       </header>
 
       <div class="query mt-8">
@@ -68,12 +65,12 @@
         </div>
       </div>
 
-      <button id="query-button" class="mt-8 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      <button id="query-button" class="mt-8 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
         onclick="sendRequest()">
         查询
       </button>
 
-      <div class="toast ">
+      <div class="toast invisible md:visible">
         <div class="alert alert-info">
           <p>广告链接：
             <a href="https://chat.czl.net" target="_blank" class="link link-hover">CZLChat</a> <a
@@ -87,7 +84,7 @@
       </div>
     </div>
 
-    <div class="content pl-6 pt-6">
+    <div class="content pl-6 pt-6 lg:w-3/4 md:w-full">
       <h2 class="text-2xl  mb-6 font-semibold text-gradient">查询结果</h2>
       <div class="overflow-x-auto">
         <div class="overflow-y-hidden ">
