@@ -9,8 +9,7 @@ Telegram交流群：https://t.me/ai_cn2023
 
 ## 最新示意图(2023.08.28)
 
-![1693240108324.png](https://cdn-img.czl.net/2023/08/29/64eccb2da01a1.png)
-![1693240132856.png](https://cdn-img.czl.net/2023/08/29/64eccb46017e7.png)
+![1693240108324.png](https://cdn-img.czl.net/2023/09/01/64f1a1dbf0e93.png)
 
 
 ## SESS ID获取方法

@@ -1,0 +1,25 @@
+body {
+    background: url('https://cdn-img.czl.net/2023/05/23/pjbczr.webp') no-repeat center center fixed;
+}
+
+html,
+body {
+    height: 100VH;
+}
+
+.container {
+    display: flex;
+    height: 100VH;
+}
+
+.sidebar {
+    width: 30%;
+}
+
+.content {
+    width: 70%;
+}
+
+.footer {
+    margin-top: auto;
+}
