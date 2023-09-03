@@ -1,3 +1,11 @@
+function toggleProgressBar() {
+    let progressBarHeader = document.getElementById("progressbar-header");
+    let progressBarCells = document.querySelectorAll("td.progressbar");
+    let toggle = document.querySelector("#progressbar-toggle input");
+    let display = toggle.checked ? "" : "none";
+    progressBarHeader.style.display = display;
+    progressBarCells.forEach(function (cell) { cell.style.display = display; });
+}
 function toggleSubInfo() {
     let toggle = document.querySelector("#subinfo-toggle input");
     let display = toggle.checked ? "" : "none";
@@ -19,6 +27,7 @@ function toggleSetidInfo() {
     let setIdCells = document.querySelectorAll("td.setid");
     setIdCells.forEach(function (cell) { cell.style.display = display; });
 }
+toggleProgressBar();
 toggleSubInfo();
 toggleSetidInfo();
 
@@ -64,7 +73,7 @@ async function checkBilling(apiKey, apiUrl) {
             if ((subscriptionData.billing_mechanism === 'advance') || (totalAmount <= 6 && !subscriptionData.has_credit_card)) {
                 totalAmount = advanceData.total_granted;
             }
-            
+
 
             if (totalAmount > 6) {
                 startDate = subDate;
@@ -76,7 +85,7 @@ async function checkBilling(apiKey, apiUrl) {
             const usageData = await response.json();
             totalUsage = usageData.total_usage / 100;
             remaining = (totalAmount - totalUsage).toFixed(3);
-            
+
         } catch (error) {
             console.error(error);
             errors['subscription'] = error.message;
@@ -289,22 +298,22 @@ function sendRequest() {
         apiUrl = apiUrlSelect.value;
     }
 
-    
+
     let apiKeys = parseKeys(apiKeyInput.value);
-    
+
     if (apiKeys.length === 0) {
         alert("未匹配到 API-KEY，请检查输入内容");
         return;
     }
     alert("成功匹配到 API Key，确认后开始查询：" + apiKeys);
-    
+
     function parseKeys(input) {
         let lines = input.split(/\n/);
         let result = [];
         for (let line of lines) {
             let sessKeyMatch = line.match(/sess-[^-]+/);
             let skKeyMatch = line.match(/sk-[^-]+/);
-    
+
             if (sessKeyMatch !== null && skKeyMatch !== null) {
                 result.push(sessKeyMatch[0]);
             }
@@ -317,7 +326,7 @@ function sendRequest() {
         }
         return result;
     }
-    
+
 
     let lastQueryPromise = null;
 
@@ -342,162 +351,174 @@ function sendRequest() {
             )
 
             let row = document.createElement("tr");
-            row.classList.add("hover:bg-gray-700");
+            row.classList.add("bg-gray-600");
+            row.classList.add("bg-opacity-60");
+            row.classList.add("border");
+            row.classList.add("border-slate-500");
 
             let serialNumberCell = document.createElement("td"); // 创建序列号单元格
-            serialNumberCell.textContent = serialNumber; // 设置序列号文本
-            row.appendChild(serialNumberCell); // 将序列号单元格添加到行中
+            serialNumberCell.classList.add("border");
+            serialNumberCell.classList.add("border-slate-500");
+            serialNumberCell.textContent = serialNumber;
+            row.appendChild(serialNumberCell);
 
             let apiKeyCell = document.createElement("td");
+            apiKeyCell.classList.add("border");
+            apiKeyCell.classList.add("border-slate-500");
             apiKeyCell.textContent = apiKey.replace(/^(.{5}).*(.{4})$/, "$1***$2");
             row.appendChild(apiKeyCell);
 
             console.log('查看查询结果', data); // 添加 console.log 以查看 data 的值
 
-            if (data[0] === undefined) {
-                let errorMessageCell = document.createElement("td");
-                errorMessageCell.colSpan = "8";
-                errorMessageCell.classList.add("status-error");
-                errorMessageCell.textContent = "不正确或已失效的API-KEY";
-                row.appendChild(errorMessageCell);
+            let totalAmount = document.createElement("td");
+            totalAmount.classList.add("border");
+            totalAmount.classList.add("border-slate-500");
+            totalAmount.textContent = data[0];
+            row.appendChild(totalAmount);
+
+            let totalUsedCell = document.createElement("td");
+            totalUsedCell.classList.add("border");
+            totalUsedCell.classList.add("border-slate-500");
+            if (!isNaN(data[1])) {
+                totalUsedCell.textContent = data[1].toFixed(3);
             } else {
-                let totalAmount = document.createElement("td");
-                totalAmount.textContent = data[0];
-                row.appendChild(totalAmount);
-
-                let totalUsedCell = document.createElement("td");
-                if (!isNaN(data[1])) {
-                    totalUsedCell.textContent = data[1].toFixed(3);
-                } else {
-                    totalUsedCell.textContent = '❌'
-                }
-                row.appendChild(totalUsedCell);
-
-                let totalAvailableCell = document.createElement("td");
-                totalAvailableCell.textContent = typeof data[2] === 'number' ? data[2] : data[2];
-                row.appendChild(totalAvailableCell);
-                let progressCell = document.createElement("td");
-                let progressContainer = document.createElement("div"); // 添加一个新的容器元素
-                progressContainer.style.width = "100%";
-                progressContainer.style.height = "20px";
-                progressContainer.style.backgroundColor = "#f3f3f3"; // 设置容器的背景色为灰白色
-                let progressBar = document.createElement("div");
-                progressBar.style.width = (data[1] / data[0] * 100).toFixed(2) + "%";
-                progressBar.style.height = "20px";
-                progressBar.style.backgroundColor = "#4CAF50";
-                progressBar.style.position = "relative"; // 设置进度条的 position 为 relative
-                progressBar.textContent = (data[1] / data[0] * 100).toFixed(2) + "%"; // 显示百分比
-                progressBar.style.textAlign = "right"; // 设置文本对齐方式为右对齐
-                progressBar.style.paddingRight = "5px"; // 设置右边距以确保文本不超出边界
-                progressBar.style.color = "black"; // 设置文本颜色为白色
-                progressContainer.appendChild(progressBar); // 将进度条添加到容器中
-                progressCell.appendChild(progressContainer); // 将容器添加到单元格中
-                row.appendChild(progressCell);
-
-                function createSeeMoreLink(text) {
-                    let seeMoreLink = document.createElement("a");
-                    seeMoreLink.href = "#";
-                    seeMoreLink.textContent = '全部';
-                    seeMoreLink.style.cursor = "pointer";
-                    seeMoreLink.style.textDecoration = "underline";
-                    seeMoreLink.onclick = (event) => {
-                        event.preventDefault();
-                        document.getElementById('modalText').textContent = text;
-                        document.getElementById('myModal').style.display = "block";
-                    };
-                    return seeMoreLink;
-                }
-
-
-
-                let expireTime = document.createElement("td");
-                expireTime.textContent = data[3];
-                row.appendChild(expireTime);
-
-
-                let GPT35CheckResult = document.createElement("td");
-                GPT35CheckResult.textContent = data[4];
-                let GPT4CheckResult = document.createElement("td");
-                GPT4CheckResult.textContent = data[5];
-                let GPT432kCheckResult = document.createElement("td");
-                GPT432kCheckResult.textContent = data[6];
-                let highestModel = document.createElement("td");
-                if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "❌" && GPT432kCheckResult.textContent === "❌") {
-                    highestModel.textContent = "gpt3.5";
-                } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "❌") {
-                    highestModel.textContent = "gpt4";
-                } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "✅") {
-                    highestModel.textContent = "gpt4-32K";
-                } else {
-                    highestModel.textContent = "❌";
-                }
-
-                row.appendChild(highestModel);
-
-                let isSubscribe = document.createElement("td");
-                isSubscribe.style.whiteSpace = "pre"; // 添加这一行来保留换行
-                isSubscribe.textContent = data[7];
-                row.appendChild(isSubscribe);
-
-                let SubInformation = document.createElement("td");
-                SubInformation.classList.add("subinfo");
-                let SubInformationContainer = document.createElement("div");
-                SubInformationContainer.style.whiteSpace = "pre-wrap";
-                SubInformationContainer.textContent = data[8];
-
-                SubInformation.appendChild(SubInformationContainer);
-                row.appendChild(SubInformation);
-                SubInformation.style.display = document.querySelector("#subinfo-toggle input").checked ? "" : "none";
-
-
-                let setidCell = document.createElement("td");
-                setidCell.classList.add("setid");
-                let setidCellContainer = document.createElement("div");
-                setidCellContainer.style.whiteSpace = "pre-wrap";
-                setidCellContainer.textContent = data[9];
-                setidCell.appendChild(setidCellContainer);
-                row.appendChild(setidCell);
-                setidCell.style.display = document.querySelector("#setid-toggle input").checked ? "" : "none";
-
-
-                let rateLimitsDataCell = document.createElement("td");
-                let rateLimitsDataContainer = document.createElement("div");
-                rateLimitsDataContainer.style.whiteSpace = "pre-wrap";
-                if (data[13]) {
-                    let rateLimitsData = data[13];
-                    let models = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-32k'];
-                    let rateLimitsText = '';
-                    for (let model of models) {
-                        if (rateLimitsData[model]) {
-                            let modelName = '';
-                            if (model === 'gpt-3.5-turbo') {
-                                modelName = 'gpt3.5';
-                            } else if (model === 'gpt-3.5-turbo-16k') {
-                                modelName = 'gpt3.5-16K';
-                            } else if (model === 'gpt-4') {
-                                modelName = 'gpt4';
-                            } else if (model === 'gpt-4-32k') {
-                                modelName = 'gpt4-32K';
-                            }
-                            rateLimitsText += `${modelName}: ${rateLimitsData[model].max_requests_per_1_minute}, ${rateLimitsData[model].max_tokens_per_1_minute}\n`;
-                        } else {
-                            rateLimitsText += model + ": ❌\n";
-                        }
-                    }
-                    rateLimitsDataContainer.textContent = rateLimitsText;
-                }
-
-                rateLimitsDataCell.appendChild(rateLimitsDataContainer);
-                row.appendChild(rateLimitsDataCell);
-
-
-                // 是否有效列
-                let completionCheckResultCell = document.createElement("td");
-                completionCheckResultCell.innerHTML = `<span style="font-size:24px">${data[12][0]}</span><br>消耗${data[12][1]} tokens`; // 使用 innerHTML 添加两行内容
-                row.appendChild(completionCheckResultCell);
-
-
+                totalUsedCell.textContent = '❌'
             }
+            row.appendChild(totalUsedCell);
+
+            let totalAvailableCell = document.createElement("td");
+            totalAvailableCell.classList.add("border");
+            totalAvailableCell.classList.add("border-slate-500");
+            totalAvailableCell.textContent = typeof data[2] === 'number' ? data[2] : data[2];
+            row.appendChild(totalAvailableCell);
+
+
+            let progressCell = document.createElement("td");
+            progressCell.classList.add("progressbar");
+            progressCell.classList.add("border");
+            progressCell.classList.add("border-slate-500");
+            let progressContainer = document.createElement("div"); // 添加一个新的容器元素
+            progressContainer.style.width = "100%";
+            progressContainer.style.height = "20px";
+            progressContainer.style.backgroundColor = "#f3f3f3"; // 设置容器的背景色为灰白色
+            let progressBar = document.createElement("div");
+            progressBar.style.width = (data[1] / data[0] * 100).toFixed(2) + "%";
+            progressBar.style.height = "20px";
+            progressBar.style.backgroundColor = "#4CAF50";
+            progressBar.style.position = "relative"; // 设置进度条的 position 为 relative
+            progressBar.textContent = (data[1] / data[0] * 100).toFixed(2) + "%"; // 显示百分比
+            progressBar.style.textAlign = "right"; // 设置文本对齐方式为右对齐
+            progressBar.style.paddingRight = "5px"; // 设置右边距以确保文本不超出边界
+            progressBar.style.color = "black"; // 设置文本颜色为白色
+            progressContainer.appendChild(progressBar); // 将进度条添加到容器中
+            progressCell.appendChild(progressContainer); // 将容器添加到单元格中
+            row.appendChild(progressCell);
+            progressCell.style.display = document.querySelector("#progressbar-toggle input").checked ? "" : "none";
+
+
+            // 到期时间
+            let expireTime = document.createElement("td");
+            expireTime.classList.add("border");
+            expireTime.classList.add("border-slate-500");
+            expireTime.textContent = data[3];
+            row.appendChild(expireTime);
+
+
+            let GPT35CheckResult = document.createElement("td");
+            GPT35CheckResult.textContent = data[4];
+            let GPT4CheckResult = document.createElement("td");
+            GPT4CheckResult.textContent = data[5];
+            let GPT432kCheckResult = document.createElement("td");
+            GPT432kCheckResult.textContent = data[6];
+            let highestModel = document.createElement("td");
+            highestModel.classList.add("border");
+            highestModel.classList.add("border-slate-500");
+            if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "❌" && GPT432kCheckResult.textContent === "❌") {
+                highestModel.textContent = "gpt3.5";
+            } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "❌") {
+                highestModel.textContent = "gpt4";
+            } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "✅") {
+                highestModel.textContent = "gpt4-32K";
+            } else {
+                highestModel.textContent = "❌";
+            }
+
+            row.appendChild(highestModel);
+
+            let isSubscribe = document.createElement("td");
+            isSubscribe.classList.add("border");
+            isSubscribe.classList.add("border-slate-500");
+            isSubscribe.style.whiteSpace = "pre"; // 添加这一行来保留换行
+            isSubscribe.textContent = data[7];
+            row.appendChild(isSubscribe);
+
+            let SubInformation = document.createElement("td");
+            SubInformation.classList.add("border-slate-500");
+            SubInformation.classList.add("border");
+            SubInformation.classList.add("subinfo");
+            let SubInformationContainer = document.createElement("div");
+            SubInformationContainer.style.whiteSpace = "pre-wrap";
+            SubInformationContainer.textContent = data[8];
+
+            SubInformation.appendChild(SubInformationContainer);
+            row.appendChild(SubInformation);
+            SubInformation.style.display = document.querySelector("#subinfo-toggle input").checked ? "" : "none";
+
+
+            let setidCell = document.createElement("td");
+            setidCell.classList.add("border");
+            setidCell.classList.add("border-slate-500");
+            setidCell.classList.add("setid");
+            let setidCellContainer = document.createElement("div");
+            setidCellContainer.style.whiteSpace = "pre-wrap";
+            setidCellContainer.textContent = data[9];
+            setidCell.appendChild(setidCellContainer);
+            row.appendChild(setidCell);
+            setidCell.style.display = document.querySelector("#setid-toggle input").checked ? "" : "none";
+
+
+            let rateLimitsDataCell = document.createElement("td");
+            rateLimitsDataCell.classList.add("border");
+            rateLimitsDataCell.classList.add("border-slate-500");
+            let rateLimitsDataContainer = document.createElement("div");
+            rateLimitsDataContainer.style.whiteSpace = "pre-wrap";
+            if (data[13]) {
+                let rateLimitsData = data[13];
+                let models = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-32k'];
+                let rateLimitsText = '';
+                for (let model of models) {
+                    if (rateLimitsData[model]) {
+                        let modelName = '';
+                        if (model === 'gpt-3.5-turbo') {
+                            modelName = 'gpt3.5';
+                        } else if (model === 'gpt-3.5-turbo-16k') {
+                            modelName = 'gpt3.5-16K';
+                        } else if (model === 'gpt-4') {
+                            modelName = 'gpt4';
+                        } else if (model === 'gpt-4-32k') {
+                            modelName = 'gpt4-32K';
+                        }
+                        rateLimitsText += `${modelName}: ${rateLimitsData[model].max_requests_per_1_minute}, ${rateLimitsData[model].max_tokens_per_1_minute}\n`;
+                    } else {
+                        rateLimitsText += model + ": ❌\n";
+                    }
+                }
+                rateLimitsDataContainer.textContent = rateLimitsText;
+            }
+
+            rateLimitsDataCell.appendChild(rateLimitsDataContainer);
+            row.appendChild(rateLimitsDataCell);
+
+
+            // 是否有效列
+            let completionCheckResultCell = document.createElement("td");
+            completionCheckResultCell.classList.add("border");
+            completionCheckResultCell.classList.add("border-slate-500");
+            completionCheckResultCell.innerHTML = `<span style="font-size:24px">${data[12][0]}</span><br>消耗${data[12][1]} tokens`; // 使用 innerHTML 添加两行内容
+            row.appendChild(completionCheckResultCell);
+
+
+
             tableBody.appendChild(row);
 
             if (i === apiKeys.length - 1) {
