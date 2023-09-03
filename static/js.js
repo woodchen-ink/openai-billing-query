@@ -289,30 +289,35 @@ function sendRequest() {
         apiUrl = apiUrlSelect.value;
     }
 
+    
     let apiKeys = parseKeys(apiKeyInput.value);
-
+    
     if (apiKeys.length === 0) {
         alert("未匹配到 API-KEY，请检查输入内容");
         return;
     }
-
     alert("成功匹配到 API Key，确认后开始查询：" + apiKeys);
-
+    
     function parseKeys(input) {
         let lines = input.split(/\n/);
         let result = [];
         for (let line of lines) {
-            if (line.includes("sk-") && line.includes("sess-")) {
-                let sessKey = line.match(/sess-[^\-]+/)[0];
-                result.push(sessKey);
+            let sessKeyMatch = line.match(/sess-[^-]+/);
+            let skKeyMatch = line.match(/sk-[^-]+/);
+    
+            if (sessKeyMatch !== null && skKeyMatch !== null) {
+                result.push(sessKeyMatch[0]);
             }
-            else if (line.includes("sk-")) {
-                let skKey = line.match(/sk-[^\-]+/)[0];
-                result.push(skKey);
+            else if (skKeyMatch !== null) {
+                result.push(skKeyMatch[0]);
+            }
+            else if (sessKeyMatch !== null) {
+                result.push(sessKeyMatch[0]);
             }
         }
         return result;
     }
+    
 
     let lastQueryPromise = null;
 
