@@ -34,6 +34,14 @@ toggleSetidInfo();
 let queriedApiKeys = [];
 let serialNumber = 1;
 
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
 async function checkBilling(apiKey, apiUrl) {
     const now = new Date();
     let startDate = new Date(now - 90 * 24 * 60 * 60 * 1000);
@@ -67,28 +75,29 @@ async function checkBilling(apiKey, apiUrl) {
         try {
             totalAmount = subscriptionData.hard_limit_usd;
 
-
             const advanceDataResponse = await fetch(urlAdvanceData, { headers });
             const advanceData = await advanceDataResponse.json();
+
             if ((subscriptionData.billing_mechanism === 'advance') || (totalAmount <= 6 && !subscriptionData.has_credit_card)) {
                 totalAmount = advanceData.total_granted;
             }
 
-
+        } catch (error) {
+            console.error(error);
+        }
+        try {
             if (totalAmount > 6) {
                 startDate = subDate;
-                urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
-                response = await fetch(urlUsage, { headers });
-                const usageData = await response.json();
             }
             response = await fetch(urlUsage, { headers });
             const usageData = await response.json();
+
             totalUsage = usageData.total_usage / 100;
             remaining = (totalAmount - totalUsage).toFixed(3);
 
         } catch (error) {
             console.error(error);
-            errors['subscription'] = error.message;
+
         }
 
         //获取是否绑卡
@@ -115,14 +124,13 @@ async function checkBilling(apiKey, apiUrl) {
         }
         //获取绑卡信息
         try {
-            // 从 subscriptionData 中获取 SubscribleInformation 的值...
             SubscribleInformation.account_name = subscriptionData.account_name;
             SubscribleInformation.po_number = subscriptionData.po_number;
             SubscribleInformation.billing_email = subscriptionData.billing_email;
             SubscribleInformation.tax_ids = subscriptionData.tax_ids;
 
-            let billingAddress = subscriptionData.billing_address; // 定义并赋值 billingAddress
-            let businessAddress = subscriptionData.business_address; // 定义并赋值 businessAddress
+            let billingAddress = subscriptionData.billing_address;
+            let businessAddress = subscriptionData.business_address;
 
             SubInformation = "名称: " + SubscribleInformation.account_name + "\n";
             SubInformation += "PO号: " + SubscribleInformation.po_number + "\n";
@@ -131,7 +139,7 @@ async function checkBilling(apiKey, apiUrl) {
             //使用 JavaScript 的可选链式调用来确定是否为null，避免异常控制台报错
             SubInformation += "账单地址: " + (billingAddress?.line1 ? billingAddress.line1 : '') + ", " + (billingAddress?.city ? billingAddress.city : '') + ", " + (billingAddress?.state ? billingAddress.state : '') + ", " + (billingAddress?.country ? billingAddress.country : '') + ", " + (billingAddress?.postal_code ? billingAddress.postal_code : '') + "\n";
             SubInformation += "商业地址: " + (businessAddress?.line1 ? businessAddress.line1 : '') + ", " + (businessAddress?.city ? businessAddress.city : '') + ", " + (businessAddress?.state ? businessAddress.state : '') + ", " + (businessAddress?.country ? businessAddress.country : '') + ", " + (businessAddress?.postal_code ? businessAddress.postal_code : '\n');
-            // 获取付款方法信息
+
             response = await fetch(urlPaymentmethods, { headers });
             const paymentMethodsData = await response.json();
 
@@ -216,8 +224,9 @@ async function checkBilling(apiKey, apiUrl) {
             GPT432kCheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
         } catch (error) {
             console.error(error);
-            errors['modelsCheck'] = error.message;
         }
+
+        // 发起请求查有效
         async function checkCompletion(apiKey, apiUrl) {
             const urlCompletion = `${apiUrl}/v1/chat/completions`;
             const headers = {
@@ -256,17 +265,12 @@ async function checkBilling(apiKey, apiUrl) {
     }
 }
 
-function formatDate(date) {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
-}
 
 //查询函数
 function sendRequest() {
     showLoadingAnimation();
+    toggleProgressBar();
     toggleSubInfo();
     toggleSetidInfo();
 
@@ -373,26 +377,31 @@ function sendRequest() {
             let totalAmount = document.createElement("td");
             totalAmount.classList.add("border");
             totalAmount.classList.add("border-slate-500");
-            totalAmount.textContent = data[0];
+            totalAmount.textContent = typeof data[0] === "number" ? data[0] : "无值";
             row.appendChild(totalAmount);
 
             let totalUsedCell = document.createElement("td");
             totalUsedCell.classList.add("border");
             totalUsedCell.classList.add("border-slate-500");
-            if (!isNaN(data[1])) {
+            typeof data[1] === "number" ? data[1].toFixed(3) : '无值';
+            if(isNaN(data[1])){
+                totalUsedCell.textContent = "无值";
+            }else{
                 totalUsedCell.textContent = data[1].toFixed(3);
-            } else {
-                totalUsedCell.textContent = '❌'
             }
             row.appendChild(totalUsedCell);
 
             let totalAvailableCell = document.createElement("td");
             totalAvailableCell.classList.add("border");
             totalAvailableCell.classList.add("border-slate-500");
-            totalAvailableCell.textContent = typeof data[2] === 'number' ? data[2] : data[2];
+            if(isNaN(data[2])){
+                totalAvailableCell.textContent = "无值";
+            }else{
+                totalAvailableCell.textContent = data[2];
+            }
             row.appendChild(totalAvailableCell);
 
-
+            // 进度条
             let progressCell = document.createElement("td");
             progressCell.classList.add("progressbar");
             progressCell.classList.add("border");
@@ -420,7 +429,13 @@ function sendRequest() {
             let expireTime = document.createElement("td");
             expireTime.classList.add("border");
             expireTime.classList.add("border-slate-500");
-            expireTime.textContent = data[3];
+            if (data[3] === "1970-01-01") {
+                expireTime.textContent = "永久有效";
+            }else if(data[3] === "NaN-NaN-NaN"){
+                expireTime.textContent = "无值";
+            }else{
+                expireTime.textContent = data[3];
+            }
             row.appendChild(expireTime);
 
 
@@ -450,6 +465,12 @@ function sendRequest() {
             isSubscribe.classList.add("border-slate-500");
             isSubscribe.style.whiteSpace = "pre"; // 添加这一行来保留换行
             isSubscribe.textContent = data[7];
+            if (data[7] === "Not Found.") { 
+                isSubscribe.textContent = "无值";
+            } else {
+                isSubscribe.textContent = data[7];
+            }
+           
             row.appendChild(isSubscribe);
 
             let SubInformation = document.createElement("td");
@@ -525,7 +546,6 @@ function sendRequest() {
                 queriedApiKeys = [];
             }
             serialNumber++; // 增加序列号
-            // h2.style.display = 'block';
             table.style.display = 'table';
 
             hideLoadingAnimation();
