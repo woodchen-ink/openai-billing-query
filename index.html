@@ -12,7 +12,7 @@
 </head>
 
 <body class="bg-gray-900 text-white">
-  <div class="container w-full mx-auto lg:flex">
+  <div class="container w-full mx-auto lg:flex ">
     <div class="sidebar  bg-gray-800 bg-opacity-60 p-8 relative overflow-y-auto lg:w-1/4 md:w-full">
       <header>
         <h1 class="text-2xl font-semibold mb-8 text-gradient">OpenAI API 信息查询</h1>
@@ -93,11 +93,11 @@
       </div>
     </div>
 
-    <div class="content pl-6 pt-6 lg:w-3/4 md:w-full">
+    <div class="content pl-6 pt-6 lg:w-3/4 md:w-full overflow-y-auto h-screen">
       <h2 class="text-2xl  mb-6 font-semibold text-gradient">查询结果</h2>
       <div class="overflow-x-auto">
-        <div class="overflow-y-hidden ">
-          <table id="result-table" class="table table-md border border-slate-500 w-full">
+        <div class="overflow-y-hidden">
+          <table id="result-table" class="table table-md border border-slate-500 w-full table-pin-rows">
             <thead class="text-white border-b border-slate-500">
               <tr class="bg-gray-800 bg-opacity-80">
                 <th class="w-0.5 border border-slate-500">序号</th>
