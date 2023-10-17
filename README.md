@@ -43,3 +43,6 @@ Telegram交流群：https://t.me/ai_cn2023
 - [CZLOapi](https://oapi.czl.net)，OPENAI代理服务，无需翻墙。
 - 个人博客：https://woodchen.ink
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=woodchen-ink/openai-billing-query&type=Date)](https://api.star-history.com/svg?repos=woodchen-ink/openai-billing-query&type=Date)
