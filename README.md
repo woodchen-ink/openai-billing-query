@@ -3,9 +3,10 @@
 
 star,please.
 
-## [English](README_EN.md)
-
 Telegram交流群：https://t.me/ai_cn2023 
+QQ群：https://qm.qq.com/q/cCKTiXSn3G
+
+## [English](README_EN.md)
 
 ## 最新示意图(2023.08.28)
 
