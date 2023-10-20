@@ -1,5 +1,5 @@
 body {
-    background: url('https://cdn-img.czl.net/2023/05/23/pjbczr.webp') no-repeat center center fixed;
+    background: url('https://cdn-img-r2.czl.net/2023/05/23/pjbczr.webp') no-repeat center center fixed;
     background-size:cover;
 }
 
@@ -9,7 +9,6 @@ body {
 }
 
 .container {
-    /* display: flex; */
     height: 100%;
 }
 

@@ -8,11 +8,11 @@
   <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否GPT4-32K、是否绑卡、绑卡信息、组织信息、是否有效">
   <link rel="stylesheet" href="./static/css-1.css" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/3.6.4/full.min.css" rel="stylesheet" type="text/css" />
+  <link href="https://cdn.staticfile.org/daisyui/3.9.2/full.min.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="bg-gray-900 text-white">
-  <div class="container w-full mx-auto lg:flex">
+  <div class="container w-full mx-auto lg:flex ">
     <div class="sidebar  bg-gray-800 bg-opacity-60 p-8 relative overflow-y-auto lg:w-1/4 md:w-full">
       <header>
         <h1 class="text-2xl font-semibold mb-8 text-gradient">OpenAI API 信息查询</h1>
@@ -80,25 +80,21 @@
         查询
       </button>
 
-      <div class="toast invisible md:visible">
-        <div class="alert alert-info">
-          <p>广告链接：
-            <a href="https://chat.czl.net" target="_blank" class="link link-hover">CZLChat</a> <a
-              href="https://oapi.czl.net" target="_blank" class="link link-hover">CZLOapi</a>
-            <a href="https://store0.czl.net" target="_blank" class="link link-hover">CZL Store</a>
+      <div class=" invisible md:visible">
+        <!-- <div class="alert alert-info"> -->
             <br> 本网页由<a href="https://woodchen.ink" target="_blank" class="link link-hover">woodchen</a>开源于<a
               href="https://github.com/woodchen-ink/openai-billing-query" target="_blank"
-              class="link link-hover">Github</a>,欢迎给个star
+              class="link link-hover">Github</a>
           </p>
-        </div>
+        <!-- </div> -->
       </div>
     </div>
 
-    <div class="content pl-6 pt-6 lg:w-3/4 md:w-full">
+    <div class="content pl-6 pt-6 lg:w-3/4 md:w-full overflow-y-auto h-screen">
       <h2 class="text-2xl  mb-6 font-semibold text-gradient">查询结果</h2>
       <div class="overflow-x-auto">
-        <div class="overflow-y-hidden ">
-          <table id="result-table" class="table table-md border border-slate-500 w-full">
+        <div class="overflow-y-hidden">
+          <table id="result-table" class="table table-md border border-slate-500 w-full table-pin-rows">
             <thead class="text-white border-b border-slate-500">
               <tr class="bg-gray-800 bg-opacity-80">
                 <th class="w-0.5 border border-slate-500">序号</th>

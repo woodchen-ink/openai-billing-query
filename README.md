@@ -3,9 +3,10 @@
 
 star,please.
 
-## [English](README_EN.md)
-
 Telegram交流群：https://t.me/ai_cn2023 
+QQ群：https://qm.qq.com/q/cCKTiXSn3G
+
+## [English](README_EN.md)
 
 ## 最新示意图(2023.08.28)
 
@@ -26,6 +27,10 @@ Telegram交流群：https://t.me/ai_cn2023
 ## 怎么部署
 下载index.html直接打开就行，除了背景图片，没有任何外部资源。
 
+## 赞赏码，如果觉得好用，可以请我喝杯咖啡
+
+![IMG_1768.png](https://cdn-img-r2.czl.net/2023/10/13/6528c3c44100a.png)
+
 ## 贡献列表
 
 | 人员 | 贡献内容 |
@@ -39,3 +44,6 @@ Telegram交流群：https://t.me/ai_cn2023
 - [CZLOapi](https://oapi.czl.net)，OPENAI代理服务，无需翻墙。
 - 个人博客：https://woodchen.ink
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=woodchen-ink/openai-billing-query&type=Date)](https://api.star-history.com/svg?repos=woodchen-ink/openai-billing-query&type=Date)
