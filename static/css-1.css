@@ -1,15 +1,21 @@
-body {
-    background: url('https://cdn-img-r2.czl.net/2023/05/23/pjbczr.webp') no-repeat center center fixed;
-    background-size:cover;
-}
-
 html,
 body {
     height: 100%;
+    width:100%;
+    margin:0;
+    padding:0;
 }
-
-.container {
+mdui-layout {
     height: 100%;
+    width:80%;
+    margin:auto;
+    padding:0;
+}
+a {
+    text-decoration: none;
+}
+.hidden{
+    display:none;
 }
 
 

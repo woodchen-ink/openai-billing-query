@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="mdui-theme-light">
 
 <head>
   <meta charset="UTF-8" />
@@ -7,94 +7,72 @@
   <title>OpenAI API 信息查询</title>
   <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否GPT4-32K、是否绑卡、绑卡信息、组织信息、是否有效">
   <link rel="stylesheet" href="./static/css-1.css" type="text/css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.staticfile.org/daisyui/3.9.2/full.min.css" rel="stylesheet" type="text/css" />
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <!-- <link href="https://cdn.staticfile.org/daisyui/3.9.2/full.min.css" rel="stylesheet" type="text/css" /> -->
+  <link rel="stylesheet" href="https://unpkg.com/mdui@2.0.1/mdui.css">
+  <script src="https://unpkg.com/mdui@2.0.1/mdui.global.js"></script>
+  <!-- Filled -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-<body class="bg-gray-900 text-white">
-  <div class="container w-full mx-auto lg:flex ">
-    <div class="sidebar  bg-gray-800 bg-opacity-60 p-8 relative overflow-y-auto lg:w-1/4 md:w-full">
-      <header>
-        <h1 class="text-2xl font-semibold mb-8 text-gradient">OpenAI API 信息查询</h1>
-        <p class="mt-3 text-sm">页面列表：</p>
-        <a href="index.html" class="badge badge-accent hover:bg-base-100">查API信息</a><br>
-        <a href="get_sess1.html" class="badge badge-accent hover:bg-base-100">通过access token获取sess</a><br>
-        <a href="https://woodchen.ink/1266.html" class="badge badge-accent hover:bg-base-100" target="_blank">手动获取sess的方法</a>
-      </header>
+<body>
+  <mdui-layout class="mdui-prose">
+    <mdui-top-app-bar>
+      <mdui-top-app-bar-title>OpenAI API 信息查询</mdui-top-app-bar-title>
+    </mdui-top-app-bar>
+    <mdui-navigation-drawer open class="example-navigation-drawer">
+      <p>页面列表：</p>
+      <mdui-chip elevated><a href="index.html">查API信息</a></mdui-chip><br>
+      <mdui-chip elevated><a href="get_sess1.html">通过access token获取sess</a></mdui-chip><br>
+      <mdui-chip elevated><a href="https://woodchen.ink/1266.html" target="_blank">手动获取sess的方法</a></mdui-chip>
 
-      <div class="query mt-8">
-        <div class=" items-center mb-4">
+      <div class="query">
+        <div class="">
           <h2>输入 API KEY</h2>
-          <p class="text-xs text-gray-400">本站不保存 KEY 信息，查询后请自行保存</p>
+          <p class="">本站不保存 KEY 信息，查询后请自行保存</p>
         </div>
-        <textarea id="api-key-input"
-          class="w-full bg-gray-700 border border-gray-500 rounded px-3 py-2 placeholder-gray-500 placeholder-opacity-50 textarea-xs"
-          placeholder="请输入 API-KEY或sessID，多个可直接粘贴" rows="8"></textarea>
+        <mdui-text-field id="api-key-input" class="" placeholder="请输入 API-KEY或sessID，多个可直接粘贴" rows="8" label="API-KEY或sessID"></mdui-text-field>
 
-        <div class=" items-center mt-4">
-          <h2>选择查询线路</h2>
-          <p class="text-xs text-gray-400">支持自定义线路，官网线路需要魔法</p>
-        </div>
-        <select id="api-url-select"
-          class="w-full bg-gray-700 border border-gray-500 rounded px-3 py-2 mt-2 text-gray-400"
-          onchange="toggleCustomUrlInput()">
-          <option value="https://api.openai.com">【官网线路】api.openai.com</option>
-          <option value="https://oapi.czl.net">【CZLoapi线路】oapi.czl.net</option>
-          <option value="https://gateway.ai.cloudflare.com/v1/feedd0aa8abd6875052d86a94f1baf83/test/openai">【Cloudflare网关】查不了已用量</option>
-          <option value="https://openai.996.lat">【群友提供公益CF反代,勿测重要key】openai.996.lat</option>
-          <option value="custom">【已前置https】自定义</option>
-        </select>
+        <mdui-select id="api-url-select" icon="airline_stops" label="查询线路" value="https://api.openai.com" onchange="toggleCustomUrlInput()">
+          <mdui-menu-item value="https://api.openai.com">【官网线路】api.openai.com</mdui-menu-item>
+          <mdui-menu-item value="https://oapi.czl.net">【CZLoapi线路】oapi.czl.net</mdui-menu-item>
+          <mdui-menu-item value="https://gateway.ai.cloudflare.com/v1/feedd0aa8abd6875052d86a94f1baf83/test/openai">【Cloudflare网关】查不了已用量</mdui-menu-item>
+          <mdui-menu-item value="https://openai.996.lat">【群友提供公益CF反代,勿测重要key】openai.996.lat</mdui-menu-item>
+          <mdui-menu-item value="custom">【已前置https】自定义</mdui-menu-item>
+        </mdui-select>
 
-        <input type="text" id="custom-url-input" placeholder="输入自定义API，填域名即可，无需https://"
-          class="w-full bg-gray-700 border border-gray-500 rounded px-3 py-2 mt-2 text-gray-400 hidden" />
+        <mdui-text-field type="text" id="custom-url-input" placeholder="输入自定义API，填域名即可，无需https://" class="hidden"></mdui-text-field>
       </div>
 
-
-      
-        
-
-      <div class="flex mt-4">
-        <div id="progressbar-toggle" class="form-control w-1/3">
-          <label class="label">
-            <span class="label-text text-warning">已用比例</span>
-          </label>
-          <input type="checkbox" class="toggle toggle-primary" onchange="toggleProgressBar()">
+        <div id="progressbar-toggle" style="width:30%">
+          <mdui-checkbox onchange="toggleProgressBar()">已用比例</mdui-checkbox>
         </div>
-        <div id="subinfo-toggle" class="form-control w-1/3">
-          <label class="label">
-            <span class="label-text text-warning">绑卡信息</span>
-          </label>
-          <input type="checkbox" class="toggle toggle-primary" onchange="toggleSubInfo()">
+        <div id="subinfo-toggle" style="width:30%">
+          <mdui-checkbox onchange="toggleSubInfo()">绑卡信息</mdui-checkbox>
+        </div>
+        <div id="setid-toggle">
+          <mdui-checkbox onchange="toggleSetidInfo()">组织信息</mdui-checkbox>
         </div>
 
-        <div id="setid-toggle" class="form-control w-1/3">
-          <label class="label">
-            <span class="label-text text-warning">组织信息</span>
-          </label>
-          <input type="checkbox" class="toggle toggle-primary" onchange="toggleSetidInfo()">
-        </div>
-      </div>
-
-      <button id="query-button" class="mt-8 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-        onclick="sendRequest()">
+      <mdui-button full-width id="query-button"  onclick="sendRequest()">
         查询
-      </button>
+      </mdui-button>
 
       <div class=" invisible md:visible">
         <!-- <div class="alert alert-info"> -->
-            <br> 本网页由<a href="https://woodchen.ink" target="_blank" class="link link-hover">woodchen</a>开源于<a
-              href="https://github.com/woodchen-ink/openai-billing-query" target="_blank"
-              class="link link-hover">Github</a>
-          </p>
+        <br> 本网页由<a href="https://woodchen.ink" target="_blank" class="link link-hover">woodchen</a>开源于<a
+          href="https://github.com/woodchen-ink/openai-billing-query" target="_blank" class="link link-hover">Github</a>
+        </p>
         <!-- </div> -->
       </div>
-    </div>
+    </mdui-navigation-drawer>
 
-    <div class="content pl-6 pt-6 lg:w-3/4 md:w-full overflow-y-auto h-screen">
-      <h2 class="text-2xl  mb-6 font-semibold text-gradient">查询结果</h2>
+    <mdui-layout-main>
+      <h2>查询结果</h2>
+
       <div class="overflow-x-auto">
         <div class="overflow-y-hidden">
-          <table id="result-table" class="table table-md border border-slate-500 w-full table-pin-rows">
+          <table class="mdui-table" id="result-table" class="">
             <thead class="text-white border-b border-slate-500">
               <tr class="bg-gray-800 bg-opacity-80">
                 <th class="w-0.5 border border-slate-500">序号</th>
@@ -105,7 +83,7 @@
                 <th class="w-auto border border-slate-500" id="progressbar-header">已用比例</th>
                 <th class="w-36 border border-slate-500">到期时间</th>
                 <th class="w-auto border border-slate-500">模型[最高]</th>
-                <th class="w-auto border border-slate-500" >绑卡</th>
+                <th class="w-auto border border-slate-500">绑卡</th>
                 <th class="w-auto border border-slate-500" id="subinfo-header">绑卡信息</th>
                 <th class="w-auto border border-slate-500" id="setid-header">组织信息</th>
                 <th class="w-2/12 border border-slate-500">速率[RPM,TPM]</th>
@@ -119,8 +97,8 @@
         </div>
 
       </div>
-    </div>
-  </div>
+    </mdui-layout-main>
+  </mdui-layout>
   <script src="./static/js.js"></script>
 
 </body>

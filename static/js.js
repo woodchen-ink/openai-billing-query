@@ -1,13 +1,13 @@
 function toggleProgressBar() {
     let progressBarHeader = document.getElementById("progressbar-header");
     let progressBarCells = document.querySelectorAll("td.progressbar");
-    let toggle = document.querySelector("#progressbar-toggle input");
+    let toggle = document.querySelector("#progressbar-toggle mdui-checkbox");
     let display = toggle.checked ? "" : "none";
     progressBarHeader.style.display = display;
     progressBarCells.forEach(function (cell) { cell.style.display = display; });
 }
 function toggleSubInfo() {
-    let toggle = document.querySelector("#subinfo-toggle input");
+    let toggle = document.querySelector("#subinfo-toggle mdui-checkbox");
     let display = toggle.checked ? "" : "none";
 
     let subInfoHeader = document.getElementById("subinfo-header");
@@ -18,7 +18,7 @@ function toggleSubInfo() {
 }
 
 function toggleSetidInfo() {
-    let toggle = document.querySelector("#setid-toggle input");
+    let toggle = document.querySelector("#setid-toggle mdui-checkbox");
     let display = toggle.checked ? "" : "none";
 
     let setIdHeader = document.getElementById("setid-header");
@@ -430,7 +430,7 @@ function sendRequest() {
             progressContainer.appendChild(progressBar); // 将进度条添加到容器中
             progressCell.appendChild(progressContainer); // 将容器添加到单元格中
             row.appendChild(progressCell);
-            progressCell.style.display = document.querySelector("#progressbar-toggle input").checked ? "" : "none";
+            progressCell.style.display = document.querySelector("#progressbar-toggle mdui-checkbox").checked ? "" : "none";
 
 
             // 到期时间
@@ -491,7 +491,7 @@ function sendRequest() {
 
             SubInformation.appendChild(SubInformationContainer);
             row.appendChild(SubInformation);
-            SubInformation.style.display = document.querySelector("#subinfo-toggle input").checked ? "" : "none";
+            SubInformation.style.display = document.querySelector("#subinfo-toggle mdui-checkbox").checked ? "" : "none";
 
 
             let setidCell = document.createElement("td");
@@ -503,7 +503,7 @@ function sendRequest() {
             setidCellContainer.textContent = data[9];
             setidCell.appendChild(setidCellContainer);
             row.appendChild(setidCell);
-            setidCell.style.display = document.querySelector("#setid-toggle input").checked ? "" : "none";
+            setidCell.style.display = document.querySelector("#setid-toggle mdui-checkbox").checked ? "" : "none";
 
 
             let rateLimitsDataCell = document.createElement("td");
