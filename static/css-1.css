@@ -6,10 +6,7 @@ body {
     padding:0;
 }
 mdui-layout {
-    height: 100%;
-    width:80%;
-    margin:auto;
-    padding:0;
+    height: 100VH;
 }
 a {
     text-decoration: none;

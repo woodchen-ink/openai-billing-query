@@ -17,21 +17,49 @@
 
 <body>
   <mdui-layout class="mdui-prose">
+    <mdui-layout-main>
+      <h2>查询结果</h2>
+          <table id="result-table">
+            <thead>
+              <tr>
+                <th >序号</th>
+                <th >API KEY</th>
+                <th >总额度</th>
+                <th >已使用</th>
+                <th >剩余量</th>
+                <th  id="progressbar-header">已用比例</th>
+                <th >到期时间</th>
+                <th >模型[最高]</th>
+                <th >绑卡</th>
+                <th id="subinfo-header">绑卡信息</th>
+                <th id="setid-header">组织信息</th>
+                <th>速率[RPM,TPM]</th>
+                <th>有效</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 表格内容 -->
+            </tbody>
+          </table>
+    </mdui-layout-main>
+
     <mdui-top-app-bar>
+      <mdui-button-icon icon="menu" close-on-overlay-click id="toggle-button"></mdui-button-icon>
       <mdui-top-app-bar-title>OpenAI API 信息查询</mdui-top-app-bar-title>
     </mdui-top-app-bar>
-    <mdui-navigation-drawer open class="example-navigation-drawer">
+
+    <mdui-navigation-drawer open contained="true" class="left-drawer">
       <p>页面列表：</p>
       <mdui-chip elevated><a href="index.html">查API信息</a></mdui-chip><br>
       <mdui-chip elevated><a href="get_sess1.html">通过access token获取sess</a></mdui-chip><br>
       <mdui-chip elevated><a href="https://woodchen.ink/1266.html" target="_blank">手动获取sess的方法</a></mdui-chip>
 
-      <div class="query">
-        <div class="">
+      <div>
+        <div >
           <h2>输入 API KEY</h2>
-          <p class="">本站不保存 KEY 信息，查询后请自行保存</p>
+          <p >本站不保存 KEY 信息，查询后请自行保存</p>
         </div>
-        <mdui-text-field id="api-key-input" class="" placeholder="请输入 API-KEY或sessID，多个可直接粘贴" rows="8" label="API-KEY或sessID"></mdui-text-field>
+        <mdui-text-field id="api-key-input" placeholder="请输入 API-KEY或sessID，多个可直接粘贴" rows="8" label="API-KEY或sessID"></mdui-text-field>
 
         <mdui-select id="api-url-select" icon="airline_stops" label="查询线路" value="https://api.openai.com" onchange="toggleCustomUrlInput()">
           <mdui-menu-item value="https://api.openai.com">【官网线路】api.openai.com</mdui-menu-item>
@@ -58,46 +86,15 @@
         查询
       </mdui-button>
 
-      <div class=" invisible md:visible">
-        <!-- <div class="alert alert-info"> -->
-        <br> 本网页由<a href="https://woodchen.ink" target="_blank" class="link link-hover">woodchen</a>开源于<a
-          href="https://github.com/woodchen-ink/openai-billing-query" target="_blank" class="link link-hover">Github</a>
+      <div>
+        <br> 本网页由<a href="https://woodchen.ink" target="_blank">woodchen</a>开源于<a
+          href="https://github.com/woodchen-ink/openai-billing-query" target="_blank">Github</a>
         </p>
-        <!-- </div> -->
       </div>
     </mdui-navigation-drawer>
 
-    <mdui-layout-main>
-      <h2>查询结果</h2>
 
-      <div class="overflow-x-auto">
-        <div class="overflow-y-hidden">
-          <table class="mdui-table" id="result-table" class="">
-            <thead class="text-white border-b border-slate-500">
-              <tr class="bg-gray-800 bg-opacity-80">
-                <th class="w-0.5 border border-slate-500">序号</th>
-                <th class="w-2/12 border border-slate-500">API KEY</th>
-                <th class="w-auto border border-slate-500">总额度</th>
-                <th class="w-auto border border-slate-500">已使用</th>
-                <th class="w-auto border border-slate-500">剩余量</th>
-                <th class="w-auto border border-slate-500" id="progressbar-header">已用比例</th>
-                <th class="w-36 border border-slate-500">到期时间</th>
-                <th class="w-auto border border-slate-500">模型[最高]</th>
-                <th class="w-auto border border-slate-500">绑卡</th>
-                <th class="w-auto border border-slate-500" id="subinfo-header">绑卡信息</th>
-                <th class="w-auto border border-slate-500" id="setid-header">组织信息</th>
-                <th class="w-2/12 border border-slate-500">速率[RPM,TPM]</th>
-                <th class="w-2 border border-slate-500">有效</th>
-              </tr>
-            </thead>
-            <tbody class="border-t border-slate-500">
-              <!-- 表格内容 -->
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </mdui-layout-main>
+    
   </mdui-layout>
   <script src="./static/js.js"></script>
 

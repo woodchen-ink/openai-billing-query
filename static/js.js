@@ -599,3 +599,17 @@ function hideLoadingAnimation() {
     button.innerHTML = "查询";
 }
 
+const navigationDrawer = document.querySelector(".left-drawer");
+const toggleButton = document.getElementById("toggle-button");
+
+let isOpen = true;
+
+toggleButton.addEventListener("click", () => {
+  isOpen = !isOpen;
+  if (isOpen) {
+    navigationDrawer.open = true;
+  } else {
+    navigationDrawer.open = false;
+  }
+});
+
