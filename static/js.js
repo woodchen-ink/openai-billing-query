@@ -45,13 +45,13 @@ async function checkBilling(apiKey, apiUrl) {
         "Authorization": "Bearer " + apiKey,
         "Content-Type": "application/json"
     };
-    const modelsCheck = `${apiUrl}/v1/models`;
-    const urlSubscription = `${apiUrl}/v1/dashboard/billing/subscription`;
-    let urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
-    const urlsetid = apiUrl + '/v1/organizations';
-    const urlPaymentmethods = `${apiUrl}/v1/dashboard/billing/payment_methods`;
-    const urlRatelimits = `${apiUrl}/v1/dashboard/rate_limits`;
-    const urlAdvanceData = apiUrl + '/dashboard/billing/credit_grants'; // 预付费查询接口
+    const modelsCheck = `${apiUrl}/models`;
+    const urlSubscription = `${apiUrl}/dashboard/billing/subscription`;
+    let urlUsage = `${apiUrl}/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
+    const urlsetid = apiUrl + '/organizations';
+    const urlPaymentmethods = `${apiUrl}/dashboard/billing/payment_methods`;
+    const urlRatelimits = `${apiUrl}/dashboard/rate_limits`;
+    const urlAdvanceData = `${apiUrl}/dashboard/billing/credit_grants`; // 预付费查询接口
 
     try {
         let totalAmount, totalUsage, remaining, GPT35CheckResult, GPT4CheckResult, GPT432kCheckResult, setid, isSubscrible;
@@ -77,7 +77,7 @@ async function checkBilling(apiKey, apiUrl) {
 
             if (totalAmount > 6) {
                 startDate = subDate;
-                urlUsage = `${apiUrl}/v1/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
+                urlUsage = `${apiUrl}/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
                 response = await fetch(urlUsage, { headers });
                 const usageData = await response.json();
             }
@@ -219,7 +219,7 @@ async function checkBilling(apiKey, apiUrl) {
             errors['modelsCheck'] = error.message;
         }
         async function checkCompletion(apiKey, apiUrl) {
-            const urlCompletion = `${apiUrl}/v1/chat/completions`;
+            const urlCompletion = `${apiUrl}/chat/completions`;
             const headers = {
                 "Authorization": "Bearer " + apiKey,
                 "Content-Type": "application/json"
@@ -293,9 +293,14 @@ function sendRequest() {
             if (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://")) {
                 apiUrl = "https://" + apiUrl;
             }
+            apiUrl += "/v1";
         }
     } else {
         apiUrl = apiUrlSelect.value;
+        // 检查选择的是否是"Cloudflare网关"选项
+        if (apiUrlSelect.value !== "https://gateway.ai.cloudflare.com/v1/feedd0aa8abd6875052d86a94f1baf83/test/openai") {
+            apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
+        }
     }
 
 
