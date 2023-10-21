@@ -1,37 +1,41 @@
-html,
-body {
-    height: 100%;
-    width:100%;
-    margin:0;
-    padding:0;
-}
-mdui-layout {
-    height: 100VH;
-}
-a {
-    text-decoration: none;
-}
-.hidden{
-    display:none;
-}
-@font-face {
-    font-family: "Material Icons";
-    src: url(/static/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2);
-}
 /* 修改 primary 的颜色值 */
 :root {
     --mdui-color-primary-light: 103, 80, 164;
     --mdui-color-primary-dark: 208, 188, 255;
-  }
-  
-  /* 把 foo 元素的背景色设置为 primary */
-  .foo {
-    background-color: rgb(var(--mdui-color-primary));
-  }
-  
-  /* 把 bar 元素的背景色设置为含 0.8 不透明度的 primary */
-  .bar {
-    background-color: rgba(var(--mdui-color-primary), 0.8);
-  }
+}
+mdui-top-app-bar {
+    background-color: rgba(var(--mdui-color-primary), 0.2);
+}
 
+mdui-button {
+    border-radius: var(--mdui-shape-corner-small);
+}
+
+mdui-navigation-drawer {
+    padding-top: 20px;
+}
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+mdui-layout {
+    height: 100VH;
+}
+
+a {
+    text-decoration: none;
+}
+
+.hidden {
+    display: none;
+}
+
+@font-face {
+    font-family: "Material Icons";
+    src: url(/static/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2);
+}
 
