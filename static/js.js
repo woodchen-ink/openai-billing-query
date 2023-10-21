@@ -1,3 +1,5 @@
+
+mdui.setColorScheme('#006874');
 function toggleProgressBar() {
     let progressBarHeader = document.getElementById("progressbar-header");
     let progressBarCells = document.querySelectorAll("td.progressbar");
@@ -272,7 +274,6 @@ async function checkBilling(apiKey, apiUrl) {
 
 //查询函数
 function sendRequest() {
-    showLoadingAnimation();
     toggleProgressBar();
     toggleSubInfo();
     toggleSetidInfo();
@@ -284,7 +285,11 @@ function sendRequest() {
     table.style.visibility = "visible";
 
     if (apiKeyInput.value.trim() === "") {
-        alert("请填写API KEY");
+        mdui.alert({
+                    headline: "未匹配到 API-KEY",
+                    description: "请检查输入内容",
+                    confirmText: "OK",
+                  })
         return;
     }
 
@@ -293,7 +298,11 @@ function sendRequest() {
     let apiUrl = "";
     if (apiUrlSelect.value === "custom") {
         if (customUrlInput.value.trim() === "") {
-            alert("请设置API链接");
+            mdui.alert({
+                headline: "无查询线路",
+                description: "请选择或自定义",
+                confirmText: "OK",
+              })
             return;
         } else {
             apiUrl = customUrlInput.value.trim();
@@ -313,11 +322,15 @@ function sendRequest() {
 
     let apiKeys = parseKeys(apiKeyInput.value);
 
-    if (apiKeys.length === 0) {
-        alert("未匹配到 API-KEY，请检查输入内容");
-        return;
-    }
-    alert("成功匹配到 API Key，确认后开始查询：" + apiKeys);
+    mdui.alert({
+        headline: "成功匹配到 API Key",
+        description: apiKeys,
+        confirmText: "OK",
+      });
+
+
+
+    showLoadingAnimation();
 
     function parseKeys(input) {
         let lines = input.split(/\n/);
@@ -361,36 +374,23 @@ function sendRequest() {
                 }
             }
             )
-
             let row = document.createElement("tr");
-            row.classList.add("bg-gray-600");
-            row.classList.add("bg-opacity-60");
-            row.classList.add("border");
-            row.classList.add("border-slate-500");
 
             let serialNumberCell = document.createElement("td"); // 创建序列号单元格
-            serialNumberCell.classList.add("border");
-            serialNumberCell.classList.add("border-slate-500");
             serialNumberCell.textContent = serialNumber;
             row.appendChild(serialNumberCell);
 
             let apiKeyCell = document.createElement("td");
-            apiKeyCell.classList.add("border");
-            apiKeyCell.classList.add("border-slate-500");
             apiKeyCell.textContent = apiKey.replace(/^(.{5}).*(.{4})$/, "$1***$2");
             row.appendChild(apiKeyCell);
 
             console.log('查看查询结果', data); // 添加 console.log 以查看 data 的值
 
             let totalAmount = document.createElement("td");
-            totalAmount.classList.add("border");
-            totalAmount.classList.add("border-slate-500");
             totalAmount.textContent = typeof data[0] === "number" ? data[0] : "无值";
             row.appendChild(totalAmount);
 
             let totalUsedCell = document.createElement("td");
-            totalUsedCell.classList.add("border");
-            totalUsedCell.classList.add("border-slate-500");
             typeof data[1] === "number" ? data[1].toFixed(3) : '无值';
             if(isNaN(data[1])){
                 totalUsedCell.textContent = "无值";
@@ -400,8 +400,6 @@ function sendRequest() {
             row.appendChild(totalUsedCell);
 
             let totalAvailableCell = document.createElement("td");
-            totalAvailableCell.classList.add("border");
-            totalAvailableCell.classList.add("border-slate-500");
             if(isNaN(data[2])){
                 totalAvailableCell.textContent = "无值";
             }else{
@@ -412,8 +410,6 @@ function sendRequest() {
             // 进度条
             let progressCell = document.createElement("td");
             progressCell.classList.add("progressbar");
-            progressCell.classList.add("border");
-            progressCell.classList.add("border-slate-500");
             let progressContainer = document.createElement("div"); // 添加一个新的容器元素
             progressContainer.style.width = "100%";
             progressContainer.style.height = "20px";
@@ -435,8 +431,6 @@ function sendRequest() {
 
             // 到期时间
             let expireTime = document.createElement("td");
-            expireTime.classList.add("border");
-            expireTime.classList.add("border-slate-500");
             if (data[3] === "1970-01-01") {
                 expireTime.textContent = "永久有效";
             }else if(data[3] === "NaN-NaN-NaN"){
@@ -454,8 +448,6 @@ function sendRequest() {
             let GPT432kCheckResult = document.createElement("td");
             GPT432kCheckResult.textContent = data[6];
             let highestModel = document.createElement("td");
-            highestModel.classList.add("border");
-            highestModel.classList.add("border-slate-500");
             if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "❌" && GPT432kCheckResult.textContent === "❌") {
                 highestModel.textContent = "gpt3.5";
             } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "❌") {
@@ -469,8 +461,6 @@ function sendRequest() {
             row.appendChild(highestModel);
 
             let isSubscribe = document.createElement("td");
-            isSubscribe.classList.add("border");
-            isSubscribe.classList.add("border-slate-500");
             isSubscribe.style.whiteSpace = "pre"; // 添加这一行来保留换行
             isSubscribe.textContent = data[7];
             if (data[7] === "Not Found.") { 
@@ -482,8 +472,6 @@ function sendRequest() {
             row.appendChild(isSubscribe);
 
             let SubInformation = document.createElement("td");
-            SubInformation.classList.add("border-slate-500");
-            SubInformation.classList.add("border");
             SubInformation.classList.add("subinfo");
             let SubInformationContainer = document.createElement("div");
             SubInformationContainer.style.whiteSpace = "pre-wrap";
@@ -495,8 +483,6 @@ function sendRequest() {
 
 
             let setidCell = document.createElement("td");
-            setidCell.classList.add("border");
-            setidCell.classList.add("border-slate-500");
             setidCell.classList.add("setid");
             let setidCellContainer = document.createElement("div");
             setidCellContainer.style.whiteSpace = "pre-wrap";
@@ -507,8 +493,6 @@ function sendRequest() {
 
 
             let rateLimitsDataCell = document.createElement("td");
-            rateLimitsDataCell.classList.add("border");
-            rateLimitsDataCell.classList.add("border-slate-500");
             let rateLimitsDataContainer = document.createElement("div");
             rateLimitsDataContainer.style.whiteSpace = "pre-wrap";
             if (data[13]) {
@@ -541,8 +525,6 @@ function sendRequest() {
 
             // 是否有效列
             let completionCheckResultCell = document.createElement("td");
-            completionCheckResultCell.classList.add("border");
-            completionCheckResultCell.classList.add("border-slate-500");
             completionCheckResultCell.innerHTML = `<span style="font-size:24px">${data[12][0]}</span><br>消耗${data[12][1]} tokens`; // 使用 innerHTML 添加两行内容
             row.appendChild(completionCheckResultCell);
 
@@ -555,8 +537,6 @@ function sendRequest() {
             }
             serialNumber++; // 增加序列号
             table.style.display = 'table';
-
-            hideLoadingAnimation();
 
         })
         lastQueryPromise = checkBilling(apiKey, apiUrl).then((data) => {
@@ -587,17 +567,32 @@ function toggleCustomUrlInput() {
 
 function showLoadingAnimation() {
     const button = document.getElementById("query-button");
-    button.disabled = true;
-    button.innerHTML = `
-    <span class="loading loading-ring "></span>
-    `;
+    
+    // 创建一个新的 <mdui-linear-progress> 元素
+    const progressElement = document.createElement("mdui-linear-progress");
+    progressElement.id = "query-progress";
+    
+    // 将新元素替代原始按钮元素
+    button.parentElement.replaceChild(progressElement, button);
 }
 
 function hideLoadingAnimation() {
-    const button = document.getElementById("query-button");
-    button.disabled = false;
-    button.innerHTML = "查询";
+    const progressElement = document.querySelector("mdui-linear-progress");
+    
+    if (progressElement) {
+        const button = document.createElement("mdui-button");
+        button.id = "query-button";
+        button.innerHTML = "查询";
+        button.setAttribute("full-width", "");
+        button.setAttribute("icon", "search");
+        button.setAttribute("onclick", "sendRequest()");
+        
+        // 将原始按钮元素替代回来
+        progressElement.parentElement.replaceChild(button, progressElement);
+    }
 }
+
+
 
 const navigationDrawer = document.querySelector(".left-drawer");
 const toggleButton = document.getElementById("toggle-button");
