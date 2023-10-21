@@ -13,11 +13,13 @@ mdui-button {
 .left-drawer-main{
     padding:20px 10px 0 10px;
     /* background-color: rgba(var(--mdui-color-primary), 0.1); */
-    height:calc(100vh - 84px);
+    /* height:calc(100vh - 84px); */
 }
 .mdui-main-container{
-    width:96%;
-    padding:20px auto 0 auto;
+    width:92%;
+    /* padding:20px auto 0 auto; */
+    margin-left: auto;
+    margin-right: auto;
 }
 html,
 body {

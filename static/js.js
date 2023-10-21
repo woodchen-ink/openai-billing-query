@@ -360,7 +360,11 @@ function sendRequest() {
         let apiKey = apiKeys[i].trim();
 
         if (queriedApiKeys.includes(apiKey)) {
-            console.log(`API KEY ${apiKey} 已查询过，跳过此次查询`);
+            mdui.alert({
+                headline: "重复提示",
+                description: `API KEY ${apiKey} 已查询过，跳过此次查询`,
+                confirmText: "OK"
+              })
             continue;
         }
         queriedApiKeys.push(apiKey);
