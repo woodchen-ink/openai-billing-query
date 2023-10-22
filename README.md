@@ -7,14 +7,15 @@ Telegram交流群：https://t.me/ai_cn2023
 QQ群：https://qm.qq.com/q/cCKTiXSn3G
 
 
-新版本：https://o-b.pages.dev/
+新版本：https://o-b.woodchen.ink/
 daisyUI版本：https://daisyui.o-b.pages.dev/
 
 ## [English](README_EN.md)
 
 ## 最新示意图(2023.08.28)
 
-![示意图](https://cdn-img.czl.net/2023/09/01/64f1ab8497308.png)
+![image](https://github.com/woodchen-ink/openai-billing-query/assets/95951386/aa3c8a1d-c8ec-4873-848e-9f553d3877c7)
+
 
 
 ## SESS ID获取方法
