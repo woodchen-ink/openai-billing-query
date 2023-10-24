@@ -1,5 +1,4 @@
 
-mdui.setColorScheme('#006874');
 function toggleProgressBar() {
     let progressBarHeader = document.getElementById("progressbar-header");
     let progressBarCells = document.querySelectorAll("td.progressbar");
@@ -110,19 +109,19 @@ async function checkBilling(apiKey, apiUrl) {
             if (subscriptionData.plan.id.includes('payg')) {
                 switch (subscriptionData.billing_mechanism) {
                     case 'advance':
-                        isSubscrible = '✅预付费';
+                        isSubscrible = '<mdui-icon-check></mdui-icon-check>预付费';
                         break;
                     case 'arrears':
-                        isSubscrible = '✅已欠费';
+                        isSubscrible = '<mdui-icon-check></mdui-icon-check>已欠费';
                         break;
                     case null:
-                        isSubscrible = '✅后付费';
+                        isSubscrible = '<mdui-icon-check></mdui-icon-check>后付费';
                         break;
                     default:
-                        isSubscrible = '✅';
+                        isSubscrible = '<mdui-icon-check></mdui-icon-check>';
                 }
             } else {
-                isSubscrible = '❌';
+                isSubscrible = '<mdui-icon-close></mdui-icon-close>';
             }
         } catch (error) {
             console.error(error);
@@ -215,18 +214,18 @@ async function checkBilling(apiKey, apiUrl) {
             errors['rateLimits'] = error.message;
         }
         // 初始化模型查询结果
-        GPT35CheckResult = '❌';
-        GPT4CheckResult = '❌';
-        GPT432kCheckResult = '❌';
+        GPT35CheckResult = '<mdui-icon-close></mdui-icon-close>';
+        GPT4CheckResult = '<mdui-icon-close></mdui-icon-close>';
+        GPT432kCheckResult = '<mdui-icon-close></mdui-icon-close>';
         //3.5模型查询
         let GPT35CheckSuccess = false; // 初始化为 false
         try {
             const modelsCheckResponse = await fetch(modelsCheck, { headers });
             const modelsCheckData = await modelsCheckResponse.json();
 
-            GPT35CheckSuccess = GPT35CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-3.5-turbo')) ? '✅' : '❌';
-            GPT4CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4')) ? '✅' : '❌';
-            GPT432kCheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '✅' : '❌';
+            GPT35CheckSuccess = GPT35CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-3.5-turbo')) ? '<mdui-icon-check></mdui-icon-check>' : '<mdui-icon-close></mdui-icon-close>';
+            GPT4CheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4')) ? '<mdui-icon-check></mdui-icon-check>' : '<mdui-icon-close></mdui-icon-close>';
+            GPT432kCheckResult = Array.isArray(modelsCheckData.data) && modelsCheckData.data.some(item => item.id.includes('gpt-4-32k')) ? '<mdui-icon-check></mdui-icon-check>' : '<mdui-icon-close></mdui-icon-close>';
         } catch (error) {
             console.error(error);
         }
@@ -242,9 +241,9 @@ async function checkBilling(apiKey, apiUrl) {
                 "model": "gpt-3.5-turbo",
                 "messages": [{
                     "role": "user",
-                    "content": "Hello"
+                    "content": "hi"
                 }],
-                "max_tokens": 5
+                "max_tokens": 1
             });
 
             let response = await fetch(urlCompletion, {
@@ -256,9 +255,9 @@ async function checkBilling(apiKey, apiUrl) {
             let data = await response.json();
             // 判断请求是否成功
             if (response.status === 200) {
-                return ['✅', data.usage.total_tokens]; // 返回状态和 total_tokens
+                return ['<mdui-icon-check></mdui-icon-check>', data.usage.total_tokens]; // 返回状态和 total_tokens
             } else {
-                return ['❌', null];
+                return ['<mdui-icon-close></mdui-icon-close>', null];
             }
         }
         // 调用 checkCompletion 函数并获取结果
@@ -452,14 +451,14 @@ function sendRequest() {
             let GPT432kCheckResult = document.createElement("td");
             GPT432kCheckResult.textContent = data[6];
             let highestModel = document.createElement("td");
-            if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "❌" && GPT432kCheckResult.textContent === "❌") {
+            if (GPT35CheckResult.textContent === "<mdui-icon-check></mdui-icon-check>" && GPT4CheckResult.textContent === "<mdui-icon-close></mdui-icon-close>" && GPT432kCheckResult.textContent === "<mdui-icon-close></mdui-icon-close>") {
                 highestModel.textContent = "gpt3.5";
-            } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "❌") {
+            } else if (GPT35CheckResult.textContent === "<mdui-icon-check></mdui-icon-check>" && GPT4CheckResult.textContent === "<mdui-icon-check></mdui-icon-check>" && GPT432kCheckResult.textContent === "<mdui-icon-close></mdui-icon-close>") {
                 highestModel.textContent = "gpt4";
-            } else if (GPT35CheckResult.textContent === "✅" && GPT4CheckResult.textContent === "✅" && GPT432kCheckResult.textContent === "✅") {
+            } else if (GPT35CheckResult.textContent === "<mdui-icon-check></mdui-icon-check>" && GPT4CheckResult.textContent === "<mdui-icon-check></mdui-icon-check>" && GPT432kCheckResult.textContent === "<mdui-icon-check></mdui-icon-check>") {
                 highestModel.textContent = "gpt4-32K";
             } else {
-                highestModel.textContent = "❌";
+                highestModel.textContent = "<mdui-icon-close></mdui-icon-close>";
             }
 
             row.appendChild(highestModel);
@@ -517,7 +516,7 @@ function sendRequest() {
                         }
                         rateLimitsText += `${modelName}: ${rateLimitsData[model].max_requests_per_1_minute}, ${rateLimitsData[model].max_tokens_per_1_minute}\n`;
                     } else {
-                        rateLimitsText += model + ": ❌\n";
+                        rateLimitsText += model + ": <mdui-icon-close></mdui-icon-close>\n";
                     }
                 }
                 rateLimitsDataContainer.textContent = rateLimitsText;
