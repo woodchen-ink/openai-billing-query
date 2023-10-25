@@ -109,19 +109,19 @@ async function checkBilling(apiKey, apiUrl) {
             if (subscriptionData.plan.id.includes('payg')) {
                 switch (subscriptionData.billing_mechanism) {
                     case 'advance':
-                        isSubscrible = '<mdui-icon-check></mdui-icon-check>预付费';
+                        isSubscrible = '✅预付费';
                         break;
                     case 'arrears':
-                        isSubscrible = '<mdui-icon-check></mdui-icon-check>已欠费';
+                        isSubscrible = '✅已欠费';
                         break;
                     case null:
-                        isSubscrible = '<mdui-icon-check></mdui-icon-check>后付费';
+                        isSubscrible = '✅后付费';
                         break;
                     default:
-                        isSubscrible = '<mdui-icon-check></mdui-icon-check>';
+                        isSubscrible = '✅';
                 }
             } else {
-                isSubscrible = '<mdui-icon-close></mdui-icon-close>';
+                isSubscrible = '❌';
             }
         } catch (error) {
             console.error(error);
