@@ -1,4 +1,3 @@
-
 function toggleProgressBar() {
     let progressBarHeader = document.getElementById("progressbar-header");
     let progressBarCells = document.querySelectorAll("td.progressbar");
