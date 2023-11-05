@@ -31,9 +31,32 @@ toggleProgressBar();
 toggleSubInfo();
 toggleSetidInfo();
 
+
+// 线路选择框
+function toggleCustomUrlInput() {
+    // 获取id为"api-url-select"的元素
+    const selectElement = document.getElementById("api-url-select");
+    // 获取id为"custom-url-input"的元素
+    const customUrlInput = document.getElementById("custom-url-input");
+
+    // 如果selectElement的值为"custom"
+    if (selectElement.value === "custom") {
+        // 从customUrlInput的classList中移除"hidden"
+        customUrlInput.classList.remove("hidden");
+    } else {
+        // 给customUrlInput的classList添加"hidden"
+        customUrlInput.classList.add("hidden");
+    }
+}
+
 let queriedApiKeys = [];
 let serialNumber = 1;
 
+/**
+ * 格式化日期
+ * @param {Date} date - 需要格式化的日期对象
+ * @returns {string} - 格式化后的日期字符串（年-月-日）
+ */
 function formatDate(date) {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -73,32 +96,48 @@ async function checkBilling(apiKey, apiUrl) {
         const formattedDate = `${expiryDate.getFullYear()}-${(expiryDate.getMonth() + 1).toString().padStart(2, '0')}-${expiryDate.getDate().toString().padStart(2, '0')}`;
 
         try {
+            // 将订阅数据中的硬限制金额赋值给totalAmount变量
             totalAmount = subscriptionData.hard_limit_usd;
 
+            // 通过fetch函数获取advanceData数据，传入urlAdvanceData和headers参数
             const advanceDataResponse = await fetch(urlAdvanceData, { headers });
+            // 将响应解析为json格式
             const advanceData = await advanceDataResponse.json();
 
+            // 如果订阅数据的计费机制为'advance'，或者总金额小于等于6并且订阅数据中没有信用卡信息
             if ((subscriptionData.billing_mechanism === 'advance') || (totalAmount <= 6 && !subscriptionData.has_credit_card)) {
+                // 将advanceData中的total_granted属性值赋值给totalAmount变量
                 totalAmount = advanceData.total_granted;
             }
 
         } catch (error) {
+            // 捕获错误并打印到控制台
             console.error(error);
         }
         try {
+            // 如果总金额大于6
             if (totalAmount > 6) {
+                // 设置开始日期为子日期
                 startDate = subDate;
+                // 构建请求使用数据的URL
                 urlUsage = `${apiUrl}/dashboard/billing/usage?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`;
+                // 发送请求获取使用数据的响应
                 response = await fetch(urlUsage, { headers });
+                // 将响应解析为JSON格式的数据
                 const usageData = await response.json();
             }
+            // 发送请求获取使用数据的响应
             response = await fetch(urlUsage, { headers });
+            // 将响应解析为JSON格式的数据
             const usageData = await response.json();
 
+            // 计算总使用量并除以100
             totalUsage = usageData.total_usage / 100;
+            // 计算剩余金额并保留3位小数
             remaining = (totalAmount - totalUsage).toFixed(3);
 
         } catch (error) {
+            // 输出错误信息
             console.error(error);
 
         }
@@ -231,11 +270,14 @@ async function checkBilling(apiKey, apiUrl) {
 
         // 发起请求查有效
         async function checkCompletion(apiKey, apiUrl) {
+            // 设置请求的url
             const urlCompletion = `${apiUrl}/chat/completions`;
+            // 设置请求头
             const headers = {
                 "Authorization": "Bearer " + apiKey,
                 "Content-Type": "application/json"
             };
+            // 设置请求体
             const postBody = JSON.stringify({
                 "model": "gpt-3.5-turbo",
                 "messages": [{
@@ -245,12 +287,14 @@ async function checkBilling(apiKey, apiUrl) {
                 "max_tokens": 1
             });
 
+            // 发起请求
             let response = await fetch(urlCompletion, {
                 method: 'POST',
                 headers: headers,
                 body: postBody
             });
 
+            // 获取响应数据
             let data = await response.json();
             // 判断请求是否成功
             if (response.status === 200) {
@@ -284,35 +328,44 @@ function sendRequest() {
 
     if (apiKeyInput.value.trim() === "") {
         mdui.alert({
-                    headline: "未匹配到 API-KEY",
-                    description: "请检查输入内容",
-                    confirmText: "OK",
-                  })
+            headline: "未匹配到 API-KEY",
+            description: "请检查输入内容",
+            confirmText: "OK",
+        })
         return;
     }
 
     document.getElementById("result-table").getElementsByTagName('tbody')[0].innerHTML = "";
 
     let apiUrl = "";
+    // 判断用户选择的API URL选项
     if (apiUrlSelect.value === "custom") {
         if (customUrlInput.value.trim() === "") {
             mdui.alert({
                 headline: "无查询线路",
                 description: "请选择或自定义",
                 confirmText: "OK",
-              })
+            })
             return;
         } else {
-            apiUrl = customUrlInput.value.trim();
+            const apiUrl = customUrlInput.value.trim();
+
             if (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://")) {
                 apiUrl = "https://" + apiUrl;
             }
-            apiUrl += "/v1";
+
+            if (apiUrl.startsWith("https://gateway.ai.cloudflare.com")) {
+                apiUrl = apiUrl; // 如果用户输入的是https://gateway.ai.cloudflare.com开头，则不添加/v1
+            } else {
+                apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
+            }
         }
     } else {
         apiUrl = apiUrlSelect.value;
-        // 检查选择的是否是"Cloudflare网关"选项
-        if (apiUrlSelect.value !== "https://gateway.ai.cloudflare.com/v1/feedd0aa8abd6875052d86a94f1baf83/test/openai") {
+
+        if (apiUrlSelect.value === "https://gateway.ai.cloudflare.com/v1/feedd0aa8abd6875052d86a94f1baf83/test/openai") {
+            apiUrl = apiUrl.replace("/v1", ""); // 如果用户选择的选项是https://gateway.ai.cloudflare.com开头，则删除/v1
+        } else {
             apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
         }
     }
@@ -324,7 +377,7 @@ function sendRequest() {
         headline: "成功匹配到 API Key",
         description: apiKeys,
         confirmText: "OK",
-      });
+    });
 
 
 
@@ -362,7 +415,7 @@ function sendRequest() {
                 headline: "重复提示",
                 description: `API KEY ${apiKey} 已查询过，跳过此次查询`,
                 confirmText: "OK"
-              })
+            })
             continue;
         }
         queriedApiKeys.push(apiKey);
@@ -394,17 +447,17 @@ function sendRequest() {
 
             let totalUsedCell = document.createElement("td");
             typeof data[1] === "number" ? data[1].toFixed(3) : '无值';
-            if(isNaN(data[1])){
+            if (isNaN(data[1])) {
                 totalUsedCell.textContent = "无值";
-            }else{
+            } else {
                 totalUsedCell.textContent = data[1].toFixed(3);
             }
             row.appendChild(totalUsedCell);
 
             let totalAvailableCell = document.createElement("td");
-            if(isNaN(data[2])){
+            if (isNaN(data[2])) {
                 totalAvailableCell.textContent = "无值";
-            }else{
+            } else {
                 totalAvailableCell.textContent = data[2];
             }
             row.appendChild(totalAvailableCell);
@@ -435,9 +488,9 @@ function sendRequest() {
             let expireTime = document.createElement("td");
             if (data[3] === "1970-01-01") {
                 expireTime.textContent = "永久有效";
-            }else if(data[3] === "NaN-NaN-NaN"){
+            } else if (data[3] === "NaN-NaN-NaN") {
                 expireTime.textContent = "无值";
-            }else{
+            } else {
                 expireTime.textContent = data[3];
             }
             row.appendChild(expireTime);
@@ -465,12 +518,12 @@ function sendRequest() {
             let isSubscribe = document.createElement("td");
             isSubscribe.style.whiteSpace = "pre"; // 添加这一行来保留换行
             isSubscribe.textContent = data[7];
-            if (data[7] === "Not Found.") { 
+            if (data[7] === "Not Found.") {
                 isSubscribe.textContent = "无值";
             } else {
                 isSubscribe.textContent = data[7];
             }
-           
+
             row.appendChild(isSubscribe);
 
             let SubInformation = document.createElement("td");
@@ -556,31 +609,20 @@ function sendRequest() {
 }
 
 
-function toggleCustomUrlInput() {
-    const selectElement = document.getElementById("api-url-select");
-    const customUrlInput = document.getElementById("custom-url-input");
-
-    if (selectElement.value === "custom") {
-        customUrlInput.classList.remove("hidden");
-    } else {
-        customUrlInput.classList.add("hidden");
-    }
-}
-
 function showLoadingAnimation() {
     const button = document.getElementById("query-button");
-    
+
     // 创建一个新的 <mdui-linear-progress> 元素
     const progressElement = document.createElement("mdui-linear-progress");
     progressElement.id = "query-progress";
-    
+
     // 将新元素替代原始按钮元素
     button.parentElement.replaceChild(progressElement, button);
 }
 
 function hideLoadingAnimation() {
     const progressElement = document.querySelector("mdui-linear-progress");
-    
+
     if (progressElement) {
         const button = document.createElement("mdui-button");
         button.id = "query-button";
@@ -588,7 +630,7 @@ function hideLoadingAnimation() {
         button.setAttribute("full-width", "");
         button.setAttribute("icon", "search");
         button.setAttribute("onclick", "sendRequest()");
-        
+
         // 将原始按钮元素替代回来
         progressElement.parentElement.replaceChild(button, progressElement);
     }
@@ -602,11 +644,10 @@ const toggleButton = document.getElementById("toggle-button");
 let isOpen = true;
 
 toggleButton.addEventListener("click", () => {
-  isOpen = !isOpen;
-  if (isOpen) {
-    navigationDrawer.open = true;
-  } else {
-    navigationDrawer.open = false;
-  }
+    isOpen = !isOpen;
+    if (isOpen) {
+        navigationDrawer.open = true;
+    } else {
+        navigationDrawer.open = false;
+    }
 });
-

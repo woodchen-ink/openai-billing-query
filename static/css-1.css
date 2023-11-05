@@ -48,3 +48,8 @@ a {
     src: url(/static/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2);
 }
 
+
+:not(:defined) {
+    visibility: hidden;
+  }
+
