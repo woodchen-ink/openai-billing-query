@@ -348,15 +348,13 @@ function sendRequest() {
             })
             return;
         } else {
-            const apiUrl = customUrlInput.value.trim();
+            apiUrl = customUrlInput.value.trim();
 
             if (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://")) {
                 apiUrl = "https://" + apiUrl;
             }
 
-            if (apiUrl.startsWith("https://gateway.ai.cloudflare.com")) {
-                apiUrl = apiUrl; // 如果用户输入的是https://gateway.ai.cloudflare.com开头，则不添加/v1
-            } else {
+            if (!apiUrl.startsWith("https://gateway.ai.cloudflare.com")) {
                 apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
             }
         }
@@ -369,6 +367,7 @@ function sendRequest() {
             apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
         }
     }
+
 
 
     let apiKeys = parseKeys(apiKeyInput.value);
