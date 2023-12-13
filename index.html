@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./static/mdui/mdui.css">
   <script src="./static/mdui/mdui.global.js"></script>
 
-  <script>mdui.setColorScheme('#386a1f');</script>
+  <script>mdui.setColorScheme('#0d2d44');</script>
 </head>
 
 <body>
@@ -45,9 +45,9 @@
     </div>
     </mdui-layout-main>
 
-    <mdui-top-app-bar>
-      <mdui-button-icon icon="menu" close-on-overlay-click id="toggle-button"></mdui-button-icon>
-      <mdui-top-app-bar-title style="text-align: center;">OpenAI API 信息查询</mdui-top-app-bar-title>
+    <mdui-top-app-bar >
+      <mdui-button-icon icon="menu" close-on-overlay-click id="toggle-button" style="color: white;"></mdui-button-icon>
+      <mdui-top-app-bar-title style="text-align: center;color:white;">OpenAI API 信息查询</mdui-top-app-bar-title>
     </mdui-top-app-bar>
 
     <mdui-navigation-drawer open class="left-drawer" close-on-overlay-click >
@@ -62,6 +62,7 @@
           <mdui-menu-item value="https://api.openai.com">[官网线路]api.openai.com</mdui-menu-item>
           <mdui-menu-item value="https://oapi.czl.net">[CZLoapi线路]oapi.czl.net</mdui-menu-item>
           <mdui-menu-item value="https://openai.996.lat">[群友CF反代]openai.996.lat</mdui-menu-item>
+          <mdui-menu-item value="http://localhost:3000">[本地]</mdui-menu-item>
           <mdui-menu-item value="custom">[已前置https]自定义</mdui-menu-item>
         </mdui-select>
 
