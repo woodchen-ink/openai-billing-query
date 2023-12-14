@@ -14,7 +14,11 @@ daisyUI版本：https://daisyui.o-b.pages.dev/
 
 ## 最新示意图(2023.08.28)
 
-![image](https://github.com/woodchen-ink/openai-billing-query/assets/95951386/aa3c8a1d-c8ec-4873-848e-9f553d3877c7)
+![screenshot-20231215-003431](https://github.com/woodchen-ink/openai-billing-query/assets/95951386/076cbeff-7b93-45a8-bf36-303a1dc711f0)
+
+![screenshot-20231215-003509](https://github.com/woodchen-ink/openai-billing-query/assets/95951386/e5da95ec-544e-4541-944e-308cf8ffe0e6)
+
+
 
 
 
