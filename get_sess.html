@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html class="mdui-theme-light" lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>通过access_token来获取sess</title>
+    <meta name="description" content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否GPT4-32K、是否绑卡、绑卡信息、组织信息、是否有效">
+    <link rel="stylesheet" href="./static/css-1.css" type="text/css" />
+    <link rel="stylesheet" href="./static/mdui/mdui.css">
+    <script src="./static/mdui/mdui.global.js"></script>
+
+    <script>mdui.setColorScheme('#0d2d44');</script>
+</head>
+
+<body>
+    <mdui-layout>
+        <mdui-layout-main>
+            <div class="mdui-main-container">
+                <h2>查询结果</h2>
+                <div class="mdui-table">
+                    <table id="result-table">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>Access_Token</th>
+                                <th>user id</th>
+                                <th>email</th>
+                                <th>name</th>
+                                <th>phone number</th>
+                                <th>注册时间</th>
+                                <th>sess id</th>
+                                <th>sess id生成时间</th>
+                                <th>org id</th>
+                                <th>IP Country</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 表格内容 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </mdui-layout-main>
+
+        <mdui-top-app-bar>
+            <mdui-button-icon icon="menu" close-on-overlay-click id="toggle-button"
+                style="color: white;"></mdui-button-icon>
+            <mdui-top-app-bar-title
+                style="text-align: center;color:white;">通过access_token来获取sess</mdui-top-app-bar-title>
+        </mdui-top-app-bar>
+
+        <mdui-navigation-drawer open class="left-drawer" close-on-overlay-click>
+            <div class="left-drawer-main">
+                <h3>输入 API KEY</h3>
+                <p>本站不保存 KEY 信息，查询后请自行保存</p>
+                <mdui-text-field id="api-key-input" placeholder="请输入access_token，多个请换行" label="access_token"
+                    rows="6"></mdui-text-field>
+
+                <mdui-select id="api-url-select" icon="airline_stops" label="查询线路" value="https://api.openai.com"
+                    onchange="toggleCustomUrlInput()">
+                    <mdui-menu-item value="https://api.openai.com">[官网线路]api.openai.com</mdui-menu-item>
+                    <mdui-menu-item value="https://oapi.czl.net">[CZLoapi线路]oapi.czl.net</mdui-menu-item>
+                    <mdui-menu-item value="https://openai.996.lat">[群友CF反代]openai.996.lat</mdui-menu-item>
+                    <mdui-menu-item value="custom">[已前置https]自定义</mdui-menu-item>
+                </mdui-select>
+
+                <mdui-text-field type="text" id="custom-url-input" placeholder="输入自定义API，填域名即可，无需https://"
+                    class="hidden"></mdui-text-field>
+
+                <div style="height:2rem"></div>
+
+
+                <mdui-button full-width id="query-button" icon="search" onclick="sendRequest()">
+                    查询
+                </mdui-button>
+
+
+                <!-- 下半部分 -->
+                <h4>页面列表</h4>
+                <mdui-menu style="width:100%;margin-top:20px;">
+                    <mdui-menu-item icon="search" href="index.html">查API信息</mdui-menu-item>
+                    <mdui-menu-item icon="vpn_key" href="get_sess.html">通过access token获取sess</mdui-menu-item>
+                    <mdui-menu-item icon="build" href="https://woodchen.ink/1266.html"
+                      target="_blank">手动获取sess的方法</mdui-menu-item>
+                    <mdui-menu-item icon="account_tree" href="https://github.com/pandora-next/deploy"
+                      target="_blank">pandora无痛获取access</mdui-menu-item>
+                  </mdui-menu>
+
+                <div style="margin-top:20px;">
+                    <mdui-chip elevated icon="code"> 本网页由<a href="https://woodchen.ink"
+                            target="_blank">woodchen</a>开源于<a
+                            href="https://github.com/woodchen-ink/openai-billing-query" target="_blank">Github</a>
+                    </mdui-chip>
+                </div>
+            </div>
+        </mdui-navigation-drawer>
+
+
+
+    </mdui-layout>
+    <script src="./static/getsess.js"></script>
+
+</body>
+
+</html>

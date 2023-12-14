@@ -14,55 +14,54 @@
 </head>
 
 <body>
-  <mdui-layout >
+  <mdui-layout>
     <mdui-layout-main>
       <div class="mdui-main-container">
-      <h2>查询结果</h2>
-      <div class="mdui-table">
-        <table id="result-table">
-          <thead>
-            <tr>
-              <th>序号</th>
-              <th>API KEY</th>
-              <th>总额度</th>
-              <th>已使用</th>
-              <th>剩余量</th>
-              <th id="progressbar-header">已用比例</th>
-              <th>到期时间</th>
-              <th>模型[最高]</th>
-              <th>绑卡</th>
-              <th id="subinfo-header">绑卡信息</th>
-              <th id="setid-header">组织信息</th>
-              <th>速率[RPM,TPM]</th>
-              <th>有效</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- 表格内容 -->
-          </tbody>
-        </table>
+        <h2>查询结果</h2>
+        <div class="mdui-table">
+          <table id="result-table">
+            <thead>
+              <tr>
+                <th>序号</th>
+                <th>API KEY</th>
+                <th>总额度</th>
+                <th>已使用</th>
+                <th>剩余量</th>
+                <th id="progressbar-header">已用比例</th>
+                <th>到期时间</th>
+                <th>模型[最高]</th>
+                <th>绑卡</th>
+                <th id="subinfo-header">绑卡信息</th>
+                <th id="setid-header">组织信息</th>
+                <th>速率[RPM,TPM-RPD]</th>
+                <th>有效</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 表格内容 -->
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
     </mdui-layout-main>
 
-    <mdui-top-app-bar >
+    <mdui-top-app-bar>
       <mdui-button-icon icon="menu" close-on-overlay-click id="toggle-button" style="color: white;"></mdui-button-icon>
       <mdui-top-app-bar-title style="text-align: center;color:white;">OpenAI API 信息查询</mdui-top-app-bar-title>
     </mdui-top-app-bar>
 
-    <mdui-navigation-drawer open class="left-drawer" close-on-overlay-click >
+    <mdui-navigation-drawer open class="left-drawer" close-on-overlay-click>
       <div class="left-drawer-main">
         <h3>输入 API KEY</h3>
         <p>本站不保存 KEY 信息，查询后请自行保存</p>
-        <mdui-text-field id="api-key-input" placeholder="请输入 API-KEY或sessID，多个可直接粘贴" 
-          label="API-KEY或sessID" rows="6"></mdui-text-field>
+        <mdui-text-field id="api-key-input" placeholder="请输入 API-KEY或sessID，多个可直接粘贴" label="API-KEY或sessID"
+          rows="6"></mdui-text-field>
 
         <mdui-select id="api-url-select" icon="airline_stops" label="查询线路" value="https://api.openai.com"
           onchange="toggleCustomUrlInput()">
           <mdui-menu-item value="https://api.openai.com">[官网线路]api.openai.com</mdui-menu-item>
           <mdui-menu-item value="https://oapi.czl.net">[CZLoapi线路]oapi.czl.net</mdui-menu-item>
           <mdui-menu-item value="https://openai.996.lat">[群友CF反代]openai.996.lat</mdui-menu-item>
-          <mdui-menu-item value="http://localhost:3000">[本地]</mdui-menu-item>
           <mdui-menu-item value="custom">[已前置https]自定义</mdui-menu-item>
         </mdui-select>
 
@@ -84,15 +83,17 @@
         <mdui-button full-width id="query-button" icon="search" onclick="sendRequest()">
           查询
         </mdui-button>
-        
+
 
         <!-- 下半部分 -->
         <h4>页面列表</h4>
-        <mdui-menu dense style="width:100%;margin-top:20px;">
+        <mdui-menu style="width:100%;margin-top:20px;">
           <mdui-menu-item icon="search" href="index.html">查API信息</mdui-menu-item>
-          <mdui-menu-item icon="vpn_key" href="get_sess1.html">通过access token获取sess</mdui-menu-item>
+          <mdui-menu-item icon="vpn_key" href="get_sess.html">通过access token获取sess</mdui-menu-item>
           <mdui-menu-item icon="build" href="https://woodchen.ink/1266.html"
             target="_blank">手动获取sess的方法</mdui-menu-item>
+          <mdui-menu-item icon="account_tree" href="https://github.com/pandora-next/deploy"
+            target="_blank">pandora无痛获取access</mdui-menu-item>
         </mdui-menu>
 
         <div style="margin-top:20px;">
