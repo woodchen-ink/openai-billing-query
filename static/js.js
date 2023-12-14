@@ -397,6 +397,9 @@ function sendRequest() {
             }
             else if (sessKeyMatch !== null) {
                 result.push(sessKeyMatch[0]);
+            }else {
+                // 如果没有匹配到任何内容，保留原始行
+                result.push(line);
             }
         }
         return result;
@@ -565,7 +568,7 @@ function sendRequest() {
                         } else if (model === 'gpt-4-32k') {
                             modelName = 'gpt4-32K';
                         }
-                        rateLimitsText += `${modelName}: ${rateLimitsData[model].max_requests_per_1_minute}, ${rateLimitsData[model].max_tokens_per_1_minute}\n`;
+                        rateLimitsText += `${modelName}: ${rateLimitsData[model].max_requests_per_1_minute}, ${rateLimitsData[model].max_tokens_per_1_minute}-${rateLimitsData[model].max_requests_per_1_day}\n`;
                     } else {
                         rateLimitsText += model + ": ❌\n";
                     }
