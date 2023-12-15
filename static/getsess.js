@@ -47,10 +47,6 @@ async function checkBilling(apiKey, apiUrl) {
 
 //查询函数
 async function sendRequest() {
-    let button = document.querySelector("button");
-    button.textContent = "加载中...";
-    button.disabled = true;
-    button.classList.add("loading")
 
     let apiKeyInput = document.getElementById("api-key-input");
     let apiUrlSelect = document.getElementById("api-url-select");
@@ -160,12 +156,6 @@ async function sendRequest() {
             queriedApiKeys = [];
         }
         serialNumber++;
-
-        
-
-        button.textContent = "查询";
-        button.disabled = false;
-        button.classList.remove("loading");
     }
     hideLoadingAnimation();
 }
