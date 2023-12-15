@@ -72,12 +72,23 @@ async function sendRequest() {
             return;
         } else {
             apiUrl = customUrlInput.value.trim();
+
             if (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://")) {
                 apiUrl = "https://" + apiUrl;
+            }
+
+            if (!apiUrl.startsWith("https://gateway.ai.cloudflare.com")) {
+                apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
             }
         }
     } else {
         apiUrl = apiUrlSelect.value;
+
+        if (apiUrlSelect.value === "https://gateway.ai.cloudflare.com/v1/feedd0aa8abd6875052d86a94f1baf83/test/openai") {
+            apiUrl = apiUrl.replace("/v1", ""); // 如果用户选择的选项是https://gateway.ai.cloudflare.com开头，则删除/v1
+        } else {
+            apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
+        }
     }
 
     let apiKeys = apiKeyInput.value.split(/[,\s，\n]+/);
