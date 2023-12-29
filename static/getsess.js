@@ -211,3 +211,14 @@ function hideLoadingAnimation() {
         progressElement.parentElement.replaceChild(button, progressElement);
     }
 }
+
+let isOpen = true;
+
+toggleButton.addEventListener("click", () => {
+    isOpen = !isOpen;
+    if (isOpen) {
+        navigationDrawer.open = true;
+    } else {
+        navigationDrawer.open = false;
+    }
+});

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html class="mdui-theme-light" lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>通过PandoraNext来获取Sensitive Id</title>
+    <meta
+      name="description"
+      content="批量快速查询OPENAI的余额，支持可视化展现已用比例、额度、已用量、未用量、是否GPT-4、是否GPT4-32K、是否绑卡、绑卡信息、组织信息、是否有效"
+    />
+    <link rel="stylesheet" href="./static/css-1.css" type="text/css" />
+    <link rel="stylesheet" href="./static/mdui/mdui.css" />
+    <script src="./static/mdui/mdui.global.js"></script>
+
+    <script>
+      mdui.setColorScheme("#0d2d44");
+    </script>
+  </head>
+
+  <body>
+    <style>
+      th,
+      td {
+        cursor: pointer; /* 添加鼠标指针样式 */
+        white-space: normal; /* 设置为normal使内容自动换行 */
+        word-wrap: break-word; /* 设置为break-word以确保长单词/链接被截断换行 */
+      }
+      /* 复制按钮样式 */
+      .copy-button {
+        height: 36px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: white;
+        padding: 8px;
+        border: none;
+        border-radius: 4px;
+        margin: 8px 0;
+        margin-top: 20px;
+      }
+    </style>
+    <mdui-layout>
+      <mdui-layout-main>
+        <div class="mdui-main-container">
+          <div style="display: flex">
+            <h2 style="flex: 1">查询结果</h2>
+            <button class="copy-button" onclick="copyTable()">
+              复制全部内容
+            </button>
+          </div>
+          <div class="mdui-table">
+            <table id="result-table">
+              <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>邮箱账户</th>
+                  <th>手机号</th>
+                  <th>Sensitive ID</th>
+                  <th>Refresh Token</th>
+                  <th>Access Token</th>
+                  <th>Sensitive ID创建时间</th>
+                </tr>
+              </thead>
+              <tbody id="result-tbody" style="max-width: 100%">
+                <!-- 表格内容 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </mdui-layout-main>
+
+      <mdui-top-app-bar>
+        <mdui-button-icon
+          icon="menu"
+          close-on-overlay-click
+          id="toggle-button"
+          style="color: white"
+        ></mdui-button-icon>
+        <mdui-top-app-bar-title style="text-align: center; color: white"
+          >通过PandoraNext来获取Sensitive Id</mdui-top-app-bar-title
+        >
+      </mdui-top-app-bar>
+
+      <mdui-navigation-drawer open class="left-drawer" close-on-overlay-click>
+        <div class="left-drawer-main">
+          <h3>输入 API KEY</h3>
+          <p>本站不保存 KEY 信息，查询后请自行保存</p>
+          <mdui-text-field
+            id="api-key-input"
+            placeholder="请输入账号密码，格式为'账号|密码|MFA验证码'，多个请换行"
+            label="username|password|MFA"
+            rows="6"
+          ></mdui-text-field>
+
+          <mdui-text-field
+            type="text"
+            id="custom-url-input"
+            placeholder="输入PandoraNext的API地址和前缀"
+          ></mdui-text-field>
+
+          <div style="height: 2rem"></div>
+
+          <mdui-button
+            full-width
+            id="query-button"
+            icon="search"
+            onclick="sendRequest()"
+          >
+            查询
+          </mdui-button>
+
+          <!-- 下半部分 -->
+          <h4>页面列表</h4>
+          <mdui-menu style="width: 100%; margin-top: 20px">
+            <mdui-menu-item icon="search" href="index.html"
+              >查API信息</mdui-menu-item
+            >
+            <mdui-menu-item icon="vpn_key" href="get_sess.html"
+              >通过access token获取sess</mdui-menu-item
+            >
+            <mdui-menu-item icon="vpn_key" href="get_sess2.html"
+              >通过PandoraNext获取sess</mdui-menu-item
+            >
+            <mdui-menu-item
+              icon="build"
+              href="https://woodchen.ink/1266.html"
+              target="_blank"
+              >手动获取Sensitive Id的方法</mdui-menu-item
+            >
+          </mdui-menu>
+
+          <div style="margin-top: 20px">
+            <mdui-chip elevated icon="code">
+              本网页由<a href="https://woodchen.ink" target="_blank">woodchen</a
+              >开源于<a
+                href="https://github.com/woodchen-ink/openai-billing-query"
+                target="_blank"
+                >Github</a
+              >
+            </mdui-chip>
+          </div>
+        </div>
+      </mdui-navigation-drawer>
+    </mdui-layout>
+    <script src="./static/getsess2.js"></script>
+  </body>
+</html>
