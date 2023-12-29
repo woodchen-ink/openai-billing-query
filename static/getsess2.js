@@ -12,14 +12,12 @@ function checkBilling(apiKey, apiUrl) {
     }
 
     try {
-      const response = await fetch(urlGetsess, {
-        method: "POST", // 设置请求方法为 POST
+      const response = await axios.post(urlGetsess, urlencoded, {
         headers: headers,
-        body: urlencoded,
-        redirect: "follow",
+        maxRedirects: 0,
       });
 
-      const getsessdata = await response.json();
+      const getsessdata = response.data;
       if (getsessdata && getsessdata.login_info && getsessdata.token_info) {
         resolve(getsessdata); // 返回getsessdata对象
       } else {
@@ -31,6 +29,7 @@ function checkBilling(apiKey, apiUrl) {
   });
 }
 
+
 //查询函数
 async function sendRequest() {
   let apiKeyInput = document.getElementById("api-key-input");
@@ -41,6 +40,9 @@ async function sendRequest() {
     .getElementsByTagName("tbody")[0].innerHTML = "";
 
   let apiUrl = customUrlInput.value.trim();
+  if (apiUrl.endsWith('/')) {
+    apiUrl = apiUrl.slice(0, -1); // 去掉末尾的"/"
+  }
   let userList = apiKeyInput.value.split(/[,\s，\n]+/);
   if (!apiUrl) {
     mdui.alert({
@@ -104,26 +106,29 @@ async function sendRequest() {
       let user = data.login_info.user;
       let session = user.session;
       let token_info = data.token_info;
+      let cell = document.createElement("td");
+      let cellValue = '';
       properties.forEach((prop) => {
         console.log(prop);
         let cell = document.createElement("td");
         if (prop === "created") {
-          cell.textContent = new Date(
-            session["created"] * 1000
-          ).toLocaleString();
+          cellValue = new Date(session["created"] * 1000).toLocaleString();
         } else if (prop === "sensitive_id") {
-          cell.textContent = session[prop]; // 获取 session 对象中的 sensitive_id
+          cellValue = session[prop]; // 获取 session 对象中的 sensitive_id
           cell.onclick = function () {
             copyCell(cell, `Sensitive ID复制成功`);
           };
         } else if (prop === "refresh_token" || prop === "access_token") {
-          cell.textContent = token_info[prop];
+          cellValue = token_info[prop];
           cell.onclick = function () {
             copyCell(cell, `${prop === "refresh_token" ? 'Refresh Token' : 'Access Token'}复制成功`);
           };
         } else {
-          cell.textContent = user[prop];
+          cellValue = user[prop] ? user[prop] : ''; // 确保在user[prop]为空时，cellValue被赋予空字符串
         }
+      
+        cell.textContent = cellValue && cellValue.length > 50 ? cellValue.substring(0, 57) + "..." : cellValue; // 如果长度超过60，显示"..."
+        cell.innerHTML = `<span title="${cellValue}">${cell.textContent}</span>`; // 在悬停时显示全部内容
         row.appendChild(cell);
       });
     } catch (error) {
@@ -133,8 +138,12 @@ async function sendRequest() {
       let errorMessageCell = document.createElement("td");
       errorMessageCell.colSpan = "8";
       errorMessageCell.classList.add("status-error");
-      errorMessageCell.textContent =
-        error && error.detail ? error.detail : error;
+      // 在这里检查错误信息是否为 "error request login url"
+      if (error === 'error request login url') {
+        errorMessageCell.textContent = '请求错误，请稍后重试';
+      } else {
+        errorMessageCell.textContent = error && error.detail ? error.detail : error;
+      }
       row.appendChild(errorMessageCell);
     }
 
@@ -180,6 +189,22 @@ function copyTable() {
   });
 }
 
+function copySess() {
+  var sensitiveCells = document.querySelectorAll("tbody td:nth-child(4) span"); // 选择所有的Sensitive ID单元格
+  var sensitiveIds = Array.from(sensitiveCells).map((cell) => cell.title); // 从单元格中获取所有的Sensitive ID
+  var textarea = document.createElement("textarea");
+  textarea.value = sensitiveIds.join("\n"); // 用换行符连接所有的Sensitive ID
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+  mdui.alert({
+    headline: "提示",
+    description: "Sensitive ID复制成功",
+    confirmText: "OK",
+  });
+}
+
 function showLoadingAnimation() {
   const button = document.getElementById("query-button");
 
@@ -213,10 +238,10 @@ const toggleButton = document.getElementById("toggle-button");
 let isOpen = true;
 
 toggleButton.addEventListener("click", () => {
-    isOpen = !isOpen;
-    if (isOpen) {
-        navigationDrawer.open = true;
-    } else {
-        navigationDrawer.open = false;
-    }
+  isOpen = !isOpen;
+  if (isOpen) {
+    navigationDrawer.open = true;
+  } else {
+    navigationDrawer.open = false;
+  }
 });

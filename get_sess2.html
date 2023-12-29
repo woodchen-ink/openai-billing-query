@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="./static/css-1.css" type="text/css" />
     <link rel="stylesheet" href="./static/mdui/mdui.css" />
     <script src="./static/mdui/mdui.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.3/axios.min.js" integrity="sha512-JWQFV6OCC2o2x8x46YrEeFEQtzoNV++r9im8O8stv91YwHNykzIS2TbvAlFdeH0GVlpnyd79W0ZGmffcRi++Bw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
       mdui.setColorScheme("#0d2d44");
@@ -24,6 +25,7 @@
         cursor: pointer; /* 添加鼠标指针样式 */
         white-space: normal; /* 设置为normal使内容自动换行 */
         word-wrap: break-word; /* 设置为break-word以确保长单词/链接被截断换行 */
+        max-width: 300px;
       }
       /* 复制按钮样式 */
       .copy-button {
@@ -36,6 +38,7 @@
         border-radius: 4px;
         margin: 8px 0;
         margin-top: 20px;
+        margin-left:20px;
       }
     </style>
     <mdui-layout>
@@ -43,6 +46,9 @@
         <div class="mdui-main-container">
           <div style="display: flex">
             <h2 style="flex: 1">查询结果</h2>
+            <button class="copy-button" onclick="copySess()">
+              复制sess
+            </button>
             <button class="copy-button" onclick="copyTable()">
               复制全部内容
             </button>
