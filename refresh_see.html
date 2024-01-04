@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="./static/css-1.css" type="text/css" />
     <link rel="stylesheet" href="./static/mdui/mdui.css" />
     <script src="./static/mdui/mdui.global.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.3/axios.min.js" integrity="sha512-JWQFV6OCC2o2x8x46YrEeFEQtzoNV++r9im8O8stv91YwHNykzIS2TbvAlFdeH0GVlpnyd79W0ZGmffcRi++Bw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
       mdui.setColorScheme("#0d2d44");
@@ -38,7 +37,7 @@
         border-radius: 4px;
         margin: 8px 0;
         margin-top: 20px;
-        margin-left:20px;
+        margin-left: 20px;
       }
     </style>
     <mdui-layout>
@@ -46,9 +45,7 @@
         <div class="mdui-main-container">
           <div style="display: flex">
             <h2 style="flex: 1">查询结果</h2>
-            <button class="copy-button" onclick="copySess()">
-              复制sess
-            </button>
+            <button class="copy-button" onclick="copySess()">复制sess</button>
             <button class="copy-button" onclick="copyTable()">
               复制全部内容
             </button>
@@ -92,60 +89,29 @@
           <p>本站不保存 KEY 信息，查询后请自行保存</p>
           <mdui-text-field
             id="api-key-input"
-            placeholder="请输入refresh_token，多个请换行"
+            placeholder="请输入 refresh_token，多个请回车换行"
             label="refresh_token"
             rows="6"
           ></mdui-text-field>
 
           <mdui-select
-            id="refresh-token-api"
+            id="api-url-select"
             icon="airline_stops"
-            label="刷新token线路"
+            label="查询线路"
             value="https://ai.fakeopen.com"
             onchange="toggleCustomUrlInput()"
           >
             <mdui-menu-item value="https://ai.fakeopen.com"
-              >[FakeOpen]ai.fakeopen.com</mdui-menu-item
+              >[FkopenAi]ai.fakeopen.com</mdui-menu-item
             >
-            <mdui-menu-item value="custom">自定义，使用PandoraNext的API</mdui-menu-item>
+            <mdui-menu-item value="custom">[已前置https]自定义PandoraNext API</mdui-menu-item>
           </mdui-select>
-
-          <mdui-select
-            id="api-url-select"
-            icon="airline_stops"
-            label="查询Sess线路"
-            value="https://api.openai.com"
-            onchange="toggleCustomUrlInput()"
-          >
-            <mdui-menu-item value="https://api.openai.com"
-              >[官网线路]api.openai.com</mdui-menu-item
-            >
-            <mdui-menu-item value="https://oapi.czl.net"
-              >[CZLoapi线路]oapi.czl.net</mdui-menu-item
-            >
-            <mdui-menu-item value="https://openai.996.lat"
-              >[群友CF反代]openai.996.lat</mdui-menu-item
-            >
-            <mdui-menu-item
-              value="https://gateway.ai.cloudflare.com/v1/feedd0aa8abd6875052d86a94f1baf83/test/openai"
-              >CF Gateway</mdui-menu-item
-            >
-            <mdui-menu-item value="custom">[已前置https]自定义</mdui-menu-item>
-          </mdui-select>
-
-          <mdui-text-field
-            type="text"
-            id="PandoraNext-url-input"
-            class="hidden"
-            label="PandoraNext API地址"
-            placeholder="输入PandoraNext的API地址和前缀"
-          ></mdui-text-field>
 
           <mdui-text-field
             type="text"
             id="custom-url-input"
-            label="自定义查询API"
-            placeholder="输入自定义API，填域名即可，无需https://"
+            placeholder="请输入PandoraNext的API地址和前缀"
+            label="PandoraNext API地址和前缀"
             class="hidden"
           ></mdui-text-field>
 

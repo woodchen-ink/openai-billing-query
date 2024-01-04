@@ -1,68 +1,61 @@
 let serialNumber = 1;
 
+// 线路选择框
 function toggleCustomUrlInput() {
-  const refreshTokenApiElement = document.getElementById("refresh-token-api");
-  const PandoraNextUrlInput = document.getElementById("PandoraNext-url-input");
-  if (refreshTokenApiElement.value === "custom") {
-    PandoraNextUrlInput.classList.remove("hidden");
-    PandoraNextUrlInput.style.display = "inline-block";
-    PandoraNextUrlInput.style.marginTop = "5px";
-  } else {
-    PandoraNextUrlInput.classList.add("hidden");
-    PandoraNextUrlInput.style.display = "none";
-  }
   // 获取id为"api-url-select"的元素
   const selectElement = document.getElementById("api-url-select");
   // 获取id为"custom-url-input"的元素
   const customUrlInput = document.getElementById("custom-url-input");
+
   // 如果selectElement的值为"custom"
   if (selectElement.value === "custom") {
     // 从customUrlInput的classList中移除"hidden"
     customUrlInput.classList.remove("hidden");
-    customUrlInput.style.display = "inline-block";
-    customUrlInput.style.marginTop = "5px";
   } else {
     // 给customUrlInput的classList添加"hidden"
     customUrlInput.classList.add("hidden");
-    customUrlInput.style.display = "none";
   }
 }
 
-const service = axios.create({
-  withCredentials: true, // 跨域请求时发送Cookie
-  timeout: 60000, // 请求超时
-});
-
-function checkBilling(refreshToken, refUrl, apiUrl) {
+function checkBilling(apiKey, apiUrl) {
   return new Promise(async (resolve, reject) => {
     try {
+      // 拼接url
+      var tokenUrl = `${apiUrl}`;
+      var loginUrl = `${apiUrl}/v1/dashboard/onboarding/login`;
+      // 使用"/auth/platform/refresh"，潘多拉则需要加上/api
+      if (!apiUrl.startsWith("https://ai.fakeopen.com")) {
+        tokenUrl += "/api";
+      }
+      tokenUrl += "/auth/platform/refresh";
+
       var urlencoded = new URLSearchParams();
-      urlencoded.append("refresh_token", refreshToken);
-      const response = await service.post(refUrl, urlencoded, {
+      urlencoded.append("refresh_token", apiKey);
+
+      let response = await fetch(tokenUrl, {
+        method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
+        body: urlencoded,
+        redirect: "follow",
       });
-      const rdata = response.data;
-      console.log(`rdata: ${rdata}`);
+      const rdata = await response.json();
       if (rdata && rdata.access_token && rdata.refresh_token) {
         // 查询sess
-        const get_sess = await service.post(
-          `${apiUrl}/dashboard/onboarding/login`,
-          {},
-          {
-            headers: {
-              Authorization: "Bearer " + rdata.access_token,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const getsessdata = get_sess.data;
-        console.log(`getsessdata: ${getsessdata}`);
+        const get_sess = await fetch(loginUrl, {
+          method: "POST", // 设置请求方法为 POST
+          headers: {
+            Authorization: "Bearer " + rdata.access_token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}), // 此处放置要发送的数据
+        });
+        const getsessdata = await get_sess.json();
         if (getsessdata && getsessdata.user && getsessdata.user.session) {
-          resolve({token_info: rdata, ...getsessdata});
+          resolve({ token_info: rdata, ...getsessdata });
         } else {
-          reject({token_info: rdata, ...getsessdata});
+          reject(getsessdata);
         }
       } else {
         reject(rdata);
@@ -76,38 +69,16 @@ function checkBilling(refreshToken, refUrl, apiUrl) {
 //查询函数
 async function sendRequest() {
   let apiKeyInput = document.getElementById("api-key-input");
-  let refreshTokenApi = document.getElementById("refresh-token-api");
-  let PandoraNextUrlInput = document.getElementById("PandoraNext-url-input");
   let apiUrlSelect = document.getElementById("api-url-select");
   let customUrlInput = document.getElementById("custom-url-input");
 
   document
     .getElementById("result-table")
     .getElementsByTagName("tbody")[0].innerHTML = "";
-
-  let refUrl = refreshTokenApi.value;
   let apiUrl = apiUrlSelect.value;
-  if (refUrl === "custom") {
-    refUrl = PandoraNextUrlInput.value.trim();
-    if (refUrl) {
-      refUrl += "/api";
-    }
-  }
-  if (!refUrl) {
-    mdui.alert({
-      headline: "无查询线路",
-      description: "请选择或自定义配置刷新token线路",
-      confirmText: "OK",
-    });
-    return;
-  }
-  if (!refUrl.startsWith("http://") && !refUrl.startsWith("https://")) {
-    refUrl = "https://" + refUrl;
-  }
   if (apiUrlSelect.value === "custom") {
     apiUrl = customUrlInput.value.trim();
   }
-  refUrl += "/auth/platform/refresh";
   if (!apiUrl) {
     mdui.alert({
       headline: "无查询线路",
@@ -118,11 +89,6 @@ async function sendRequest() {
   } else {
     if (!apiUrl.startsWith("http://") && !apiUrl.startsWith("https://")) {
       apiUrl = "https://" + apiUrl;
-    }
-    if (!apiUrl.startsWith("https://gateway.ai.cloudflare.com")) {
-      apiUrl += "/v1"; // 如果不是，则添加路径‘/v1’
-    } else {
-      apiUrl = apiUrl.replace("/v1", ""); // 如果用户选择的选项是https://gateway.ai.cloudflare.com开头，则删除/v1
     }
     if (apiUrl && apiUrl.endsWith("/")) {
       apiUrl = apiUrl.slice(0, -1); // 去掉末尾的"/"
@@ -160,7 +126,7 @@ async function sendRequest() {
       serialNumberCell.textContent = serialNumber;
       row.appendChild(serialNumberCell);
       try {
-        let data = await checkBilling(token, refUrl, apiUrl);
+        let data = await checkBilling(token, apiUrl);
         let user = data.user;
         let session = user.session;
         let token_info = data.token_info;
