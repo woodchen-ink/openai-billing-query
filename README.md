@@ -4,7 +4,6 @@
 star,please.
 
 Telegram交流群：https://t.me/ai_cn2023   
-QQ群：https://qm.qq.com/q/cCKTiXSn3G
 
 ## 在线访问(使用Cloudflare Pages部署)
 新版本：https://o-b.woodchen.ink/ 或者  https://o-b.pages.dev  
